@@ -14,16 +14,19 @@ env:
 install:
   - git clone https://github.com/Opetushallitus/ci-tools.git
   - source ci-tools/common/setup-tools.sh
-  - export ARTIFACT_NAME="baseimage-fatjar-jdk8"
+  - export BUILD_TIME="$(date -u --iso-8601=seconds)"
 
 script:
-  - export DOCKER_TARGET="${ECR_REPO}/${ARTIFACT_NAME}:ci-${TRAVIS_BUILD_NUMBER}"
-  - export BUILD_TIME="$(date -u --iso-8601=seconds)"
-  - docker build --label BaseimageType="$(echo ${ARTIFACT_NAME} | cut -d '-' -f 2)-${TRAVIS_BRANCH}" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${DOCKER_TARGET} .
+  - docker build --label BaseimageType="$(echo ${ARTIFACT_NAME} | cut -d '-' -f 2)-${TRAVIS_BRANCH}" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-jdk8:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk8 .
+  - docker build --label BaseimageType="$(echo ${ARTIFACT_NAME} | cut -d '-' -f 2)-${TRAVIS_BRANCH}" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-jdk11:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk11 .
   - docker images
 
 deploy:
-  provider: script
-  script: ./ci-tools/build/upload-image.sh $ARTIFACT_NAME $TRAVIS_BRANCH
-  on:
-    all_branches: true
+  - provider: script
+    script: ./ci-tools/build/upload-image.sh baseimage-fatjar-jdk8 $TRAVIS_BRANCH
+    on:
+      all_branches: true
+  - provider: script
+    script: ./ci-tools/build/upload-image.sh baseimage-fatjar-jdk11 $TRAVIS_BRANCH
+    on:
+      all_branches: true

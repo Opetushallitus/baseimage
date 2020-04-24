@@ -1,12 +1,17 @@
-FROM adoptopenjdk/openjdk8:alpine-slim
+ARG OPENJDK_VERSION
+FROM adoptopenjdk/${OPENJDK_VERSION}:alpine-slim
+
+# need to repeat the argument declaration after FROM for it to be back in scope
+ARG OPENJDK_VERSION
 
 RUN addgroup -S oph -g 1001 && adduser -u 1001 -S -G oph oph
 
-COPY files/dump_threads.sh /usr/local/bin/
-COPY files/run.sh /usr/local/bin/run
+COPY common/dump_threads.sh /usr/local/bin/
+COPY ${OPENJDK_VERSION}/run.sh /usr/local/bin/run
 
 WORKDIR /root/
-COPY *.sh ./
+COPY ${OPENJDK_VERSION}/install.sh ./
+COPY ${OPENJDK_VERSION}/test.sh ./
 RUN \
   sh install.sh && \
   sh test.sh && \
