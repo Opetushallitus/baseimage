@@ -9,16 +9,21 @@ apk --no-cache add \
   ca-certificates \
   fontconfig \
   jq \
-  lftp \
   openssh \
   openssl \
   python3 \
   py3-jinja2 \
+  ttf-dejavu \
   unzip \
   wget \
   zip
 
 ln -s /usr/bin/python3 /usr/bin/python
+
+echo "Kludging font libraries in place"
+ln -s /usr/lib/libfontconfig.so.1 /usr/lib/libfontconfig.so && \
+  ln -s /lib/libuuid.so.1 /usr/lib/libuuid.so.1 && \
+  ln -s /lib/libc.musl-x86_64.so.1 /usr/lib/libc.musl-x86_64.so.1
 
 echo "Installing tools for downloading environment configuration during service run script"
 pip3 install --upgrade pip
@@ -52,21 +57,6 @@ echo "Creating cache directories for package managers"
 mkdir /home/oph/.m2/
 mkdir /home/oph/.ivy2/
 
-mkdir /etc/oph
-
-echo "Installing Bouncy Castle bcprov security provider"
-BCPROV_DL_PREFIX="https://www.bouncycastle.org/download"
-BCPROV_PACKAGE="bcprov-jdk15on-163.jar"
-wget -c -q -P /usr/java/latest/jre/lib/ext/ ${BCPROV_DL_PREFIX}/${BCPROV_PACKAGE}
-echo "28155c8695934f666fabc235f992096e40d97ecb044d5b6b0902db6e15a0b72f  /usr/java/latest/jre/lib/ext/${BCPROV_PACKAGE}" |sha256sum -c
-
-echo "Updating java.security"
-JAVA_SECURITY_FILE=/opt/java/openjdk/jre/lib/security/java.security
-TMP_SECURITY_FILE=/tmp/java.security.new
-BC_SECURITY_PROVIDER_LINE="security.provider.10=org.bouncycastle.jce.provider.BouncyCastleProvider"
-awk -v line_to_insert="$BC_SECURITY_PROVIDER_LINE" '/^security.provider./ { if (inserted!=1) {print line_to_insert; inserted=1}  } { print $0 }' $JAVA_SECURITY_FILE > $TMP_SECURITY_FILE
-mv $TMP_SECURITY_FILE $JAVA_SECURITY_FILE
-
 echo "Installing Prometheus jmx_exporter"
 JMX_EXPORTER_VERSION="0.12.0"
 wget -q https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VERSION}/jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar
@@ -85,6 +75,26 @@ rm -rf node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64
 
 echo "Init Prometheus config file"
 echo "{}" > /etc/prometheus.yaml
+
+echo "Installing Tomcat"
+TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.88/bin"
+TOMCAT_PACKAGE="apache-tomcat-7.0.88.tar.gz"
+wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}
+echo "675abed4e71e95793f549a2077d891e28f2f8e3427aca180d2ff6607be8885be  /tmp/${TOMCAT_PACKAGE}" |sha256sum -c
+mkdir -p /opt/tomcat
+tar xf /tmp/${TOMCAT_PACKAGE} -C /opt/tomcat --strip-components=1
+rm -rf /opt/tomcat/webapps/*
+chown -R oph:oph /opt/tomcat
+
+echo "Copying Tomcat configuration"
+mv /tmp/tomcat/conf/server.xml /opt/tomcat/conf/
+mv /tmp/tomcat/lib/*.jar /opt/tomcat/lib/
+
+echo "Clearing temp directory"
+ls -la /tmp/
+rm -rf /tmp/*.tar.gz
+rm -rf /tmp/hsperfdata_root
+rm -rf /tmp/tomcat
 
 echo "Make run script executable"
 chmod +x /usr/local/bin/run

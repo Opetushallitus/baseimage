@@ -55,10 +55,10 @@ rm -v glibc-*.apk
 /usr/glibc-compat/bin/localedef -i fi_FI -f UTF-8 fi_FI.UTF-8
 
 echo "Creating cache directories for package managers"
-mkdir /home/oph/.m2/
-mkdir /home/oph/.ivy2/
+mkdir -p /home/oph/.m2/
+mkdir -p /home/oph/.ivy2/
 
-mkdir /etc/oph
+mkdir -p /etc/oph
 
 echo "Installing Prometheus jmx_exporter"
 JMX_EXPORTER_VERSION="0.12.0"
