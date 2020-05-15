@@ -21,6 +21,7 @@ script:
   - docker build --label BaseimageType="fatjar-openjdk11" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-jdk11:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk11 --build-arg SERVICE_KIND=fatjar .
   - docker build --label BaseimageType="war-openjdk8" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-jdk8:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk8 --build-arg SERVICE_KIND=war .
   - docker build --label BaseimageType="war-openjdk11" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-jdk11:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk11 --build-arg SERVICE_KIND=war .
+  - bash version_check/version_check.sh
   - docker images
 
 deploy:
