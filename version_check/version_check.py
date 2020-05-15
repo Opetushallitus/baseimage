@@ -17,7 +17,7 @@ def get_latest_release(repository_name):
 
 def get_current_version(version_string, install_script_path):
     install_script_lines = open(os.path.join(
-        repository_path, 'install.sh'), 'r').readlines()
+        repository_path, 'variants', 'fatjar-openjdk8', 'install.sh'), 'r').readlines()
     version_line_filter = f'{version_string}='
     version_line_index = [i for i, line in enumerate(
         install_script_lines) if line.startswith(version_line_filter)][0]
@@ -65,7 +65,7 @@ def send_message(repository_slug, base_image_branch, flow_token, outdated_ext_pa
 
 if __name__ == "__main__":
     github_token = os.environ.get('GITHUB_TOKEN')
-    flow_token = os.environ.get('FLOW_TOKEN')
+    #flow_token = os.environ.get('FLOW_TOKEN')
     repository_slug = os.environ.get('TRAVIS_REPO_SLUG')
     base_image_branch = os.environ.get('TRAVIS_BRANCH')
     repository_path = os.environ.get('TRAVIS_BUILD_DIR')
@@ -91,14 +91,14 @@ if __name__ == "__main__":
     outdated_ext_packages = get_outdated_ext_packages(
         get_versions(ext_packages, repo.working_tree_dir))
     apk_packages_updated = False
-    apk_versions_file = os.path.join(repo.working_tree_dir, 'package-versions')
+    apk_versions_file = os.path.join(repo.working_tree_dir, 'variants', 'fatjar-openjdk8', 'package-versions')
     if repo.is_dirty(path=apk_versions_file):
         author = Actor("oph-ci", "noreply@opintopolku.fi")
         repo.delete_remote('origin')
         repo.create_remote('origin', url=f'https://oph-ci:{github_token}@github.com/{repository_slug}.git')
-        repo.index.add(['package-versions'])
+        repo.index.add([os.path.join('variants', 'fatjar-openjdk8', 'package-versions')])
         repo.index.commit('Update Alpine packages', author=author)
         print(repo.remotes.origin.push(refspec=f'{base_image_branch}:{base_image_branch}')[0].summary)
         apk_packages_updated = True
-    send_message(repository_slug, base_image_branch, flow_token,
-                 outdated_ext_packages, apk_packages_updated)
+    #send_message(repository_slug, base_image_branch, flow_token,
+    #             outdated_ext_packages, apk_packages_updated)
