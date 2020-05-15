@@ -15,7 +15,7 @@ def get_latest_release(repository_name):
         print(e)
 
 
-def get_current_version(version_string, install_script_path):
+def get_current_version(version_string):
     install_script_lines = open(os.path.join(
         repository_path, 'variants', 'fatjar-openjdk8', 'install.sh'), 'r').readlines()
     version_line_filter = f'{version_string}='
@@ -26,11 +26,11 @@ def get_current_version(version_string, install_script_path):
     return version
 
 
-def get_versions(packages, install_script_path):
+def get_versions(packages):
     package_versions = packages
     for _, properties in package_versions.items():
         properties['current_version'] = get_current_version(
-            properties['version_string'], install_script_path)
+            properties['version_string'])
         properties['latest_version'] = get_latest_release(
             properties['repository_name'])
     return package_versions
@@ -88,15 +88,13 @@ if __name__ == "__main__":
         }
     }
 
-    outdated_ext_packages = get_outdated_ext_packages(
-        get_versions(ext_packages, repo.working_tree_dir))
+    outdated_ext_packages = get_outdated_ext_packages(get_versions(ext_packages))
     apk_packages_updated = False
-    apk_versions_file = os.path.join(repo.working_tree_dir, 'variants', 'fatjar-openjdk8', 'package-versions')
-    if repo.is_dirty(path=apk_versions_file):
+    if repo.is_dirty():
         author = Actor("oph-ci", "noreply@opintopolku.fi")
         repo.delete_remote('origin')
         repo.create_remote('origin', url=f'https://oph-ci:{github_token}@github.com/{repository_slug}.git')
-        repo.index.add([os.path.join('variants', 'fatjar-openjdk8', 'package-versions')])
+        repo.index.add([os.path.join('variants')])
         repo.index.commit('Update Alpine packages', author=author)
         print(repo.remotes.origin.push(refspec=f'{base_image_branch}:{base_image_branch}')[0].summary)
         apk_packages_updated = True
