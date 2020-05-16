@@ -65,7 +65,7 @@ def send_message(repository_slug, base_image_branch, flow_token, outdated_ext_pa
 
 if __name__ == "__main__":
     github_token = os.environ.get('GITHUB_TOKEN')
-    #flow_token = os.environ.get('FLOW_TOKEN')
+    flow_token = os.environ.get('FLOW_TOKEN')
     repository_slug = os.environ.get('TRAVIS_REPO_SLUG')
     base_image_branch = os.environ.get('TRAVIS_BRANCH')
     repository_path = os.environ.get('TRAVIS_BUILD_DIR')
@@ -98,5 +98,5 @@ if __name__ == "__main__":
         repo.index.commit('Update Alpine packages', author=author)
         print(repo.remotes.origin.push(refspec=f'{base_image_branch}:{base_image_branch}')[0].summary)
         apk_packages_updated = True
-    #send_message(repository_slug, base_image_branch, flow_token,
-    #             outdated_ext_packages, apk_packages_updated)
+    send_message(repository_slug, base_image_branch, flow_token,
+                 outdated_ext_packages, apk_packages_updated)
