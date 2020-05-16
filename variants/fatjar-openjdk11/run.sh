@@ -82,12 +82,12 @@ if [ -f "${STANDALONE_JAR}" ]; then
       export ATARU_HTTP_PORT=8080
       export CONFIG=/home/oph/oph-configuration/config.edn
       export CONFIGDEFAULTS=/home/oph/oph-configuration/config.edn
-      export APP=hakija
+      export APP="ataru-hakija"
     elif [ ${NAME} == "ataru-editori" ]; then
       export ATARU_HTTP_PORT=8080
       export CONFIG=/home/oph/oph-configuration/config.edn
       export CONFIGDEFAULTS=/home/oph/oph-configuration/config.edn
-      export APP=virkailija
+      export APP="ataru-editori"
     elif [ ${NAME} == "osaan" ]; then
         echo "Running osaan database migration"
         java -jar /usr/local/bin/osaan-db.jar -u oph
