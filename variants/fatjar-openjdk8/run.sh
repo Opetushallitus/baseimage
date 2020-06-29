@@ -7,6 +7,8 @@ CONFIGPATH="/home/oph/oph-environment"
 VARS="${CONFIGPATH}/opintopolku.yml"
 LOGPATH="${CONFIGPATH}/log"
 
+mkdir -p /tmp/log/amazon/ssm && mkdir -p /tmp/lib/amazon/ssm
+
 echo "Copying templates to home directory"
 cp -vr /etc/oph/. ${BASEPATH}
 
@@ -51,6 +53,9 @@ export JMX_PORT=1133
 
 echo "Starting Prometheus node_exporter..."
 nohup /usr/local/bin/node_exporter > /home/oph/node_exporter.log  2>&1 &
+
+echo "Starting SSM agent API..."
+nohup /usr/local/bin/ssm_agent.py > /dev/null 2>&1 &
 
 if [ ${DEBUG_ENABLED} == "true" ]; then
   echo "JDWP debugging enabled..."
