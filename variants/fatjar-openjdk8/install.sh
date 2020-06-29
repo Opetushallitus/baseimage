@@ -13,6 +13,7 @@ apk --no-cache add \
   openssh \
   openssl \
   python3 \
+  py-pip \
   py3-jinja2 \
   unzip \
   wget \
