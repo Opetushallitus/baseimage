@@ -62,10 +62,10 @@ mkdir -p /home/oph/.ivy2/
 mkdir -p /etc/oph
 
 echo "Installing Prometheus jmx_exporter"
-JMX_EXPORTER_VERSION="0.12.0"
+JMX_EXPORTER_VERSION="0.13.0"
 wget -q https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VERSION}/jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar
 mv jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar jmx_prometheus_javaagent.jar
-echo "6c7d195cb67a09517ec1469c214b3d8ab0030bdbaa9e2ee06a9995d7b03c707c  jmx_prometheus_javaagent.jar" |sha256sum -c
+echo "ffece770d8eb0abe1e479ed847a2149c72c87b516a349b13688af5e531a5fe46  jmx_prometheus_javaagent.jar" |sha256sum -c
 mv jmx_prometheus_javaagent.jar /usr/local/bin/
 
 echo "Installing Prometheus node_exporter"
