@@ -30,7 +30,7 @@ libtls-standalone-2.9.1-r1
 libunistring-0.9.10-r0
 libuuid-2.35.2-r0
 mkfontscale-1.2.1-r1
-musl-1.1.24-r8
+musl-1.1.24-r9
 musl-utils-1.1.24-r8
 ncurses-libs-6.2_p20200523-r0
 ncurses-terminfo-base-6.2_p20200523-r0
@@ -75,6 +75,7 @@ readline-8.0.4-r0
 scanelf-1.2.6-r0
 sqlite-libs-3.32.1-r0
 ssl_client-1.31.1-r16
+sudo-1.9.0-r0
 ttf-dejavu-2.37-r1
 unzip-6.0-r7
 wget-1.20.3-r1
