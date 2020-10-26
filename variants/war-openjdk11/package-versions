@@ -1,15 +1,15 @@
-alpine-baselayout-3.2.0-r6
+alpine-baselayout-3.2.0-r7
 alpine-keys-2.2-r0
 apk-tools-2.10.5-r1
 bash-5.0.17-r0
 brotli-libs-1.0.9-r1
-busybox-1.31.1-r16
+busybox-1.31.1-r19
 bzip2-1.0.8-r1
 ca-certificates-20191127-r4
-ca-certificates-bundle-20191127-r2
+ca-certificates-bundle-20191127-r4
 expat-2.2.9-r1
 fontconfig-2.13.1-r2
-freetype-2.10.2-r0
+freetype-2.10.4-r0
 gdbm-1.13-r1
 glibc-2.31-r0
 glibc-bin-2.31-r0
@@ -28,7 +28,7 @@ libtls-standalone-2.9.1-r1
 libunistring-0.9.10-r0
 libuuid-2.35.2-r0
 musl-1.1.24-r9
-musl-utils-1.1.24-r8
+musl-utils-1.1.24-r9
 ncurses-libs-6.2_p20200523-r0
 ncurses-terminfo-base-6.2_p20200523-r0
 oniguruma-6.9.5-r2
@@ -71,7 +71,7 @@ python3-3.8.5-r0
 readline-8.0.4-r0
 scanelf-1.2.6-r0
 sqlite-libs-3.32.1-r0
-ssl_client-1.31.1-r16
+ssl_client-1.31.1-r19
 sudo-1.9.0-r0
 unzip-6.0-r8
 wget-1.20.3-r1
