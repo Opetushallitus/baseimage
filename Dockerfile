@@ -39,6 +39,7 @@ COPY ci-tools/ssm_agent/ssm_agent.py /usr/local/bin
 COPY ci-tools/ssm_agent/requirements.txt /tmp
 RUN apk add musl-dev python3-dev gcc linux-headers && \
     pip3 install -r /tmp/requirements.txt && \
+    apk add fontconfig ttf-dejavu && \
     apk del musl-dev python3-dev gcc linux-headers
 RUN set -ex && apk add --no-cache sudo ca-certificates && \
     adduser -D ssm-user && echo "ssm-user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ssm-agent-users && \
