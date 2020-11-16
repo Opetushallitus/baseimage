@@ -7,6 +7,7 @@ busybox-1.31.1-r19
 bzip2-1.0.8-r1
 ca-certificates-20191127-r4
 ca-certificates-bundle-20191127-r4
+encodings-1.0.5-r0
 expat-2.2.9-r1
 fontconfig-2.13.1-r2
 freetype-2.10.4-r0
@@ -20,6 +21,7 @@ libc-utils-0.7.2-r3
 libcrypto1.1-1.1.1g-r0
 libedit-20191231.3.1-r0
 libffi-3.3-r2
+libfontenc-1.1.4-r0
 libgcc-9.3.0-r2
 libidn2-2.3.0-r0
 libpng-1.6.37-r1
@@ -27,6 +29,7 @@ libssl1.1-1.1.1g-r0
 libtls-standalone-2.9.1-r1
 libunistring-0.9.10-r0
 libuuid-2.35.2-r0
+mkfontscale-1.2.1-r1
 musl-1.1.24-r9
 musl-utils-1.1.24-r9
 ncurses-libs-6.2_p20200523-r0
@@ -73,6 +76,7 @@ scanelf-1.2.6-r0
 sqlite-libs-3.32.1-r0
 ssl_client-1.31.1-r19
 sudo-1.9.0-r0
+ttf-dejavu-2.37-r1
 unzip-6.0-r8
 wget-1.20.3-r1
 xz-libs-5.2.5-r0
