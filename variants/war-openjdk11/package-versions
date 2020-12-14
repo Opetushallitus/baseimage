@@ -31,7 +31,7 @@ libunistring-0.9.10-r0
 libuuid-2.35.2-r0
 mkfontscale-1.2.1-r1
 musl-1.1.24-r10
-musl-utils-1.1.24-r9
+musl-utils-1.1.24-r10
 ncurses-libs-6.2_p20200523-r0
 ncurses-terminfo-base-6.2_p20200523-r0
 oniguruma-6.9.5-r2
@@ -41,7 +41,7 @@ openssh-keygen-8.3_p1-r0
 openssh-server-8.3_p1-r0
 openssh-server-common-8.3_p1-r0
 openssh-sftp-server-8.3_p1-r0
-openssl-1.1.1g-r0
+openssl-1.1.1i-r0
 py3-appdirs-1.4.4-r1
 py3-cachecontrol-0.12.6-r0
 py3-certifi-2020.4.5.1-r0
