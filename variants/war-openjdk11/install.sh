@@ -33,7 +33,7 @@ pip3 install \
 rm -rf /root/.cache
 
 echo "Downloading glibc for compiling locale definitions"
-GLIBC_VERSION="2.31-r0"
+GLIBC_VERSION="2.33-r0"
 wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
 wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
 wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-bin-${GLIBC_VERSION}.apk
@@ -53,14 +53,14 @@ mkdir /home/oph/.m2/
 mkdir /home/oph/.ivy2/
 
 echo "Installing Prometheus jmx_exporter"
-JMX_EXPORTER_VERSION="0.13.0"
+JMX_EXPORTER_VERSION="0.15.0"
 wget -q https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VERSION}/jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar
 mv jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar jmx_prometheus_javaagent.jar
 echo "ffece770d8eb0abe1e479ed847a2149c72c87b516a349b13688af5e531a5fe46  jmx_prometheus_javaagent.jar" |sha256sum -c
 mv jmx_prometheus_javaagent.jar /usr/local/bin/
 
 echo "Installing Prometheus node_exporter"
-NODE_EXPORTER_VERSION="0.18.1"
+NODE_EXPORTER_VERSION="1.1.1"
 wget -q https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz
 echo "b2503fd932f85f4e5baf161268854bf5d22001869b84f00fd2d1f57b51b72424  node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz" |sha256sum -c
 tar -xvzf node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz
