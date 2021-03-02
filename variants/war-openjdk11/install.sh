@@ -56,13 +56,13 @@ echo "Installing Prometheus jmx_exporter"
 JMX_EXPORTER_VERSION="0.15.0"
 wget -q https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VERSION}/jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar
 mv jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar jmx_prometheus_javaagent.jar
-#echo "a1061f29088ac2709da076a97736de575a872538 jmx_prometheus_javaagent.jar" |sha1sum -c
+echo "a1061f29088ac2709da076a97736de575a872538  jmx_prometheus_javaagent.jar" |sha1sum -c
 mv jmx_prometheus_javaagent.jar /usr/local/bin/
 
 echo "Installing Prometheus node_exporter"
 NODE_EXPORTER_VERSION="1.1.1"
 wget -q https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz
-#echo "9e42030befe27a473f288b6c4d003b76573a70836b50d1abff26d0de4cf42860 node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz" |sha256sum -c
+echo "9e42030befe27a473f288b6c4d003b76573a70836b50d1abff26d0de4cf42860  node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz" |sha256sum -c
 tar -xvzf node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz
 rm node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz
 mv node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64/node_exporter /usr/local/bin/
