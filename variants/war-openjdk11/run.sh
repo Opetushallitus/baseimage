@@ -75,7 +75,7 @@ nohup /usr/local/bin/ssm_agent.py > /dev/null 2>&1 &
 
 if [ ${DEBUG_ENABLED} == "true" ]; then
   echo "JDWP debugging enabled..."
-  DEBUG_PARAMS=" -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=1233"
+  DEBUG_PARAMS=" -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:1233"
 else
   echo "JDWP debugging disabled..."
   DEBUG_PARAMS=""
