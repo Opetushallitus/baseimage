@@ -23,7 +23,7 @@ RUN \
   sh test.sh && \
   rm *.sh
 
-RUN apk add fontconfig ttf-dejavu
+RUN apk add fontconfig ttf-dejavu util-linux
 
 RUN echo "Remove /root and symlink /root to /home/oph for backwards compatibility"
 RUN rm -rf /root && \
