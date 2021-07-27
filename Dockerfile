@@ -5,7 +5,7 @@ FROM adoptopenjdk/${OPENJDK_VERSION}:alpine-slim
 ARG OPENJDK_VERSION
 ARG SERVICE_KIND
 
-RUN addgroup -S oph -g 1001 && adduser -u 1001 -S -G oph oph
+RUN addgroup -S oph -g 1001 && adduser -u 1001 -D -G oph oph
 
 COPY common/dump_threads.sh /usr/local/bin/
 COPY variants/${SERVICE_KIND}-${OPENJDK_VERSION}/run.sh /usr/local/bin/run
