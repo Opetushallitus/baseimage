@@ -194,7 +194,9 @@ SERVERXML
       echo "Create context.conf"
       j2 ${CONTEXT} ${VARS} > ${CATALINA_BASE}/conf/context.xml || true
     fi
-
+	
+	echo "java version"
+	java -version
     echo "Starting application..."
     exec ${CATALINA_HOME}/bin/catalina.sh run
 else
