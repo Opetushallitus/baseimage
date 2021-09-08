@@ -78,10 +78,10 @@ echo "Init Prometheus config file"
 echo "{}" > /etc/prometheus.yaml
 
 echo "Installing Tomcat"
-TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-8/v8.0.53/bin"
-TOMCAT_PACKAGE="apache-tomcat-8.0.53.tar.gz"
+TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.69/bin"
+TOMCAT_PACKAGE="apache-tomcat-8.5.69.tar.gz"
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}
-echo "19a047c4425c4ea796215d397b7caeda958c764981624ea5c4f763d98d2db7fa  /tmp/${TOMCAT_PACKAGE}" |sha256sum -c
+echo "cc9616eb29bf491839ce5c8a1c3e37cb710f6ec99aad5aefb7944b5184b13398  /tmp/${TOMCAT_PACKAGE}" |sha256sum -c
 mkdir -p /opt/tomcat
 tar xf /tmp/${TOMCAT_PACKAGE} -C /opt/tomcat --strip-components=1
 rm -rf /opt/tomcat/webapps/*
