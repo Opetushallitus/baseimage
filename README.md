@@ -6,14 +6,17 @@ Builder for various kinds of docker base images for Opetushallitus JVM-based ser
 
 ## Variants
 
-Four variants of baseimages are built by this builder. These are combinations of two ways of running the service: 
-`fatjar` or `war` (i.e. tomcat), and two JDK versions: `openjdk8` or `openjdk11`.
+Six variants of baseimages are built by this builder. These are combinations of two ways of running the service: 
+`fatjar` or `war` (i.e. tomcat), and two JDK versions: `openjdk8` or `openjdk11`. The `war` variants have Tomcat 7 and
+Tomcat 8.5 options available.
 
 Each variant is pushed in its own ECR repo, which are named:
 - `baseimage-fatjar-openjdk8`
 - `baseimage-fatjar-openjdk11`
 - `baseimage-war-openjdk8`
+- `baseimage-war-tomcat8-openjdk8`
 - `baseimage-war-openjdk11`
+- `baseimage-war-tomcat8-openjdk11`
 
 ## Building on top of base images
 
