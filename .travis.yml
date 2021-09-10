@@ -21,11 +21,12 @@ install:
   - export BUILD_TIME="$(date -u --iso-8601=seconds)"
 
 script:
-  - docker build --label BaseimageType="fatjar-openjdk8" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk8:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk8 --build-arg SERVICE_KIND=fatjar .
-  - docker build --label BaseimageType="fatjar-openjdk11" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk11:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk11 --build-arg SERVICE_KIND=fatjar .
-  - docker build --label BaseimageType="war-openjdk8" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk8:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk8 --build-arg SERVICE_KIND=war .
-  - docker build --label BaseimageType="war-tomcat8-openjdk8" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-tomcat8-openjdk8:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk8 --build-arg SERVICE_KIND=war-tomcat8 .
-  - docker build --label BaseimageType="war-openjdk11" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk11:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk11 --build-arg SERVICE_KIND=war .
+  - docker build --label BaseimageType="fatjar-openjdk8" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk8:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk8 --build-arg SERVICE_KIND=fatjar --build-arg TOMCAT_VERSION=tomcat7 .
+  - docker build --label BaseimageType="fatjar-openjdk11" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk11:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk11 --build-arg SERVICE_KIND=fatjar --build-arg TOMCAT_VERSION=tomcat7 .
+  - docker build --label BaseimageType="war-openjdk8" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk8:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk8 --build-arg SERVICE_KIND=war --build-arg TOMCAT_VERSION=tomcat7 .
+  - docker build --label BaseimageType="war-tomcat8-openjdk8" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-tomcat8-openjdk8:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk8 --build-arg SERVICE_KIND=war-tomcat8 --build-arg TOMCAT_VERSION=tomcat8 .
+  - docker build --label BaseimageType="war-openjdk11" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk11:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk11 --build-arg SERVICE_KIND=war --build-arg TOMCAT_VERSION=tomcat7 .
+  - docker build --label BaseimageType="war-tomcat8-openjdk11" --label BaseimageBuildNumber=ci-${TRAVIS_BUILD_NUMBER} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-tomcat8-openjdk11:ci-${TRAVIS_BUILD_NUMBER} --build-arg OPENJDK_VERSION=openjdk11 --build-arg SERVICE_KIND=war-tomcat8 --build-arg TOMCAT_VERSION=tomcat8 .
   - bash version_check/version_check.sh
   - docker images
 
@@ -48,5 +49,9 @@ deploy:
       all_branches: true
   - provider: script
     script: ./ci-tools/build/upload-image.sh baseimage-war-openjdk11 $TRAVIS_BRANCH
+    on:
+      all_branches: true
+  - provider: script
+    script: ./ci-tools/build/upload-image.sh baseimage-war-tomcat8-openjdk11 $TRAVIS_BRANCH
     on:
       all_branches: true
