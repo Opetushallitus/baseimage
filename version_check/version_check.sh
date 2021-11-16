@@ -5,7 +5,7 @@ echo "${ECR_REPO}/${ARTIFACT_NAME}:ci-${TRAVIS_BUILD_NUMBER}"
 
 if [ "${TRAVIS_EVENT_TYPE}" = "cron" ]
 then
-  for variant in "fatjar-openjdk8" "fatjar-openjdk11" "war-openjdk8" "war-openjdk11"; do
+  for variant in "fatjar-openjdk8" "fatjar-openjdk11" "fatjar-openjdk17" "war-openjdk8" "war-openjdk11" "war-tomcat8-openjdk8" "war-tomcat8-openjdk11"; do
     docker run -v ${TRAVIS_BUILD_DIR}/variants/${variant}:/repository "${ECR_REPO}/baseimage-${variant}:ci-${TRAVIS_BUILD_NUMBER}" /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
   done
 
