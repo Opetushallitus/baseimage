@@ -57,9 +57,9 @@ jobs:
         run: |
           git clone https://github.com/Opetushallitus/ci-tools.git
           aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 190073735177.dkr.ecr.eu-west-1.amazonaws.com
-          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk8
-          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk11
-          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk17
-          ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk8
-          ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk8
-          ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk11
+          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk8 ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk11 ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk17 ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk8 ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk8 ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk11 ${GITHUB_REF_NAME}
