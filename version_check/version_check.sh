@@ -8,7 +8,7 @@ done
 
 git config --global user.name "Github Actions"
 git config --global user.email "github-actions@opintopolku.fi"
-git commit -a -m 'Update alpine packages'
+git commit -a -m 'Update alpine packages' || true
 git push origin "HEAD:${GITHUB_REF_NAME}"
 curl -H "Content-Type: application/json" -X POST \
    --data "{\"flow_token\": \"${PILVIKEHITYS_FLOW_TOKEN}\", \"event\": \"message\", \"content\": \"Baseimage: alpine packages updated by Github Actions\"}" \
