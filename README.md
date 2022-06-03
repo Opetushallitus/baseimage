@@ -6,17 +6,24 @@ Builder for various kinds of docker base images for Opetushallitus JVM-based ser
 
 ## Variants
 
-Six variants of baseimages are built by this builder. These are combinations of two ways of running the service: 
-`fatjar` or `war` (i.e. tomcat), and two JDK versions: `openjdk8` or `openjdk11`. The `war` variants have Tomcat 7 and
-Tomcat 8.5 options available.
+Fourteen variants of baseimages are built by this builder. These are combinations of two ways of running the service: 
+`fatjar` or `war` (i.e. tomcat), two OpenJDK vendors: `AdoptOpenJDK (deprecated)` and `Corretto (Amazon AWS provided)` and three JDK versions: `openjdk8`, `openjdk11` and `openjdk17`. The `war` variants have Tomcat 7 and Tomcat 8.5 options available. Non-Corretto variants should be removed when all the applications have moved to the new variants. 
 
 Each variant is pushed in its own ECR repo, which are named:
-- `baseimage-fatjar-openjdk8`
-- `baseimage-fatjar-openjdk11`
-- `baseimage-war-openjdk8`
-- `baseimage-war-tomcat8-openjdk8`
-- `baseimage-war-openjdk11`
-- `baseimage-war-tomcat8-openjdk11`
+- `baseimage-fatjar-openjdk8-corretto`
+- `baseimage-fatjar-openjdk11-corretto`
+- `baseimage-fatjar-openjdk17-corretto`
+- `baseimage-war-openjdk8-corretto`
+- `baseimage-war-tomcat8-openjdk8-corretto`
+- `baseimage-war-openjdk11-corretto`
+- `baseimage-war-tomcat8-openjdk11-corretto`
+- `baseimage-fatjar-openjdk8` (deprecated)
+- `baseimage-fatjar-openjdk11` (deprecated)
+- `baseimage-fatjar-openjdk17` (deprecated)
+- `baseimage-war-openjdk8` (deprecated)
+- `baseimage-war-tomcat8-openjdk8` (deprecated)
+- `baseimage-war-openjdk11` (deprecated)
+- `baseimage-war-tomcat8-openjdk11` (deprecated)
 
 ## Building on top of base images
 
