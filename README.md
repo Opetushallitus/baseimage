@@ -32,15 +32,15 @@ https://github.com/Opetushallitus/ci-tools
 
 You can either use the latest master build (recommended):
 
-    export BASE_IMAGE="baseimage-fatjar-openjdk8:master"
+    export BASE_IMAGE="baseimage-fatjar-openjdk8-corretto:master"
 
 or the latest build of a specific branch:
 
-    export BASE_IMAGE="baseimage-fatjar-openjdk8:my-branch"
+    export BASE_IMAGE="baseimage-fatjar-openjdk8-corretto:my-branch"
 
 or a specific build:
 
-    export BASE_IMAGE="baseimage-fatjar-openjdk8:ci-35"
+    export BASE_IMAGE="baseimage-fatjar-openjdk8-corretto:ga-39"
 
 With this variable set, the `pull-image.sh` script in the `ci-tools` git repo pulls the correct image, and the 
 `build-*.sh` script builds your image based on the base image.

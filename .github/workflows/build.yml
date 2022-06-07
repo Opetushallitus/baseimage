@@ -75,6 +75,7 @@ jobs:
           ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk8-corretto ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk11-corretto ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk17-corretto ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk8-corretto ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk8-corretto ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk11-corretto ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk11-corretto ${GITHUB_REF_NAME}
