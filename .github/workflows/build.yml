@@ -38,6 +38,13 @@ jobs:
           docker build --label BaseimageType="war-tomcat8-openjdk8" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-tomcat8-openjdk8:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=openjdk8 --build-arg SERVICE_KIND=war-tomcat8 --build-arg TOMCAT_VERSION=tomcat8 .
           docker build --label BaseimageType="war-openjdk11" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk11:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=openjdk11 --build-arg SERVICE_KIND=war --build-arg TOMCAT_VERSION=tomcat7 .
           docker build --label BaseimageType="war-tomcat8-openjdk11" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-tomcat8-openjdk11:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=openjdk11 --build-arg SERVICE_KIND=war-tomcat8 --build-arg TOMCAT_VERSION=tomcat8 .
+          docker build -f Dockerfile-corretto-v2 --label BaseimageType="fatjar-openjdk8-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk8-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=8 --build-arg SERVICE_KIND=fatjar --build-arg TOMCAT_VERSION=tomcat7 .
+          docker build -f Dockerfile-corretto-v2 --label BaseimageType="fatjar-openjdk11-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk11-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=11 --build-arg SERVICE_KIND=fatjar --build-arg TOMCAT_VERSION=tomcat7 .
+          docker build -f Dockerfile-corretto-v2 --label BaseimageType="fatjar-openjdk17-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk17-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=17 --build-arg SERVICE_KIND=fatjar --build-arg TOMCAT_VERSION=tomcat7 .
+          docker build -f Dockerfile-corretto-v2 --label BaseimageType="war-tomcat8-openjdk8-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-tomcat8-openjdk8-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=8 --build-arg SERVICE_KIND=war --build-arg TOMCAT_VERSION=tomcat8 .
+          docker build -f Dockerfile-corretto-v2 --label BaseimageType="war-openjdk8-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk8-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=8 --build-arg SERVICE_KIND=war --build-arg TOMCAT_VERSION=tomcat7 .
+          docker build -f Dockerfile-corretto-v2 --label BaseimageType="war-openjdk11-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk11-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=11 --build-arg SERVICE_KIND=war --build-arg TOMCAT_VERSION=tomcat7 .
+
       - name: Version check
         if: ${{ github.event_name == 'schedule' }}
         shell: bash
@@ -63,3 +70,9 @@ jobs:
           ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk8 ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk8 ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk11 ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk8-corretto ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk11-corretto ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk17-corretto ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk8-corretto ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk8-corretto ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk11-corretto ${GITHUB_REF_NAME}
