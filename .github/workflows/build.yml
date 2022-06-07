@@ -44,6 +44,7 @@ jobs:
           docker build -f Dockerfile-corretto-v2 --label BaseimageType="war-tomcat8-openjdk8-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-tomcat8-openjdk8-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=8 --build-arg SERVICE_KIND=war-tomcat8 --build-arg TOMCAT_VERSION=tomcat8 .
           docker build -f Dockerfile-corretto-v2 --label BaseimageType="war-openjdk8-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk8-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=8 --build-arg SERVICE_KIND=war --build-arg TOMCAT_VERSION=tomcat7 .
           docker build -f Dockerfile-corretto-v2 --label BaseimageType="war-openjdk11-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk11-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=11 --build-arg SERVICE_KIND=war --build-arg TOMCAT_VERSION=tomcat7 .
+          docker build -f Dockerfile-corretto-v2 --label BaseimageType="war-tomcat8-openjdk11-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-tomcat8-openjdk11-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=11 --build-arg SERVICE_KIND=war-tomcat8 --build-arg TOMCAT_VERSION=tomcat8 .          
 
       - name: Version check
         if: ${{ github.event_name == 'schedule' }}
@@ -70,8 +71,10 @@ jobs:
           ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk8 ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk8 ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk11 ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk11 ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk8-corretto ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk11-corretto ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk17-corretto ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk8-corretto ${GITHUB_REF_NAME}
+          ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk11-corretto ${GITHUB_REF_NAME}
           ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk11-corretto ${GITHUB_REF_NAME}
