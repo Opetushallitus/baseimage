@@ -46,7 +46,7 @@ do
 done
 
 echo "Copying keystore file to home directory"
-cp /usr/lib/jvm/java-8-amazon-corretto/lib/security/cacerts /home/oph/
+cp /usr/lib/jvm/java-8-amazon-corretto/jre/lib/security/cacerts /home/oph/
 
 export LC_CTYPE=fi_FI.UTF-8
 export JAVA_TOOL_OPTIONS='-Dfile.encoding=UTF-8'
