@@ -52,7 +52,7 @@ jobs:
         env:
           ECR_REPO: ${{ env.ecr_repo }}
           IMAGE_LABEL: ${{ env.image_label }}
-          PILVIKEHITYS_FLOW_TOKEN: ${{ secrets.PILVIKEHITYS_FLOW_TOKEN }}
+          PILVIKEHITYS_SLACK_TOKEN: ${{ secrets.PILVIKEHITYS_SLACK_TOKEN }}
         run: |
           $(pwd)/version_check/version_check.sh
       - name: Deploy container image to ECR
