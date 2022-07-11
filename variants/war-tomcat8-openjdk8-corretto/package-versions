@@ -62,7 +62,7 @@ openssh-keygen-8.8_p1-r1
 openssh-server-8.8_p1-r1
 openssh-server-common-8.8_p1-r1
 openssh-sftp-server-8.8_p1-r1
-openssl-1.1.1p-r0
+openssl-1.1.1q-r0
 partx-2.37.4-r0
 py3-appdirs-1.4.4-r2
 py3-cachecontrol-0.12.10-r0
