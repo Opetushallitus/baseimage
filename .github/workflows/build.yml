@@ -8,74 +8,215 @@ on:
     paths-ignore:
       - '**.md'
 
+env:
+  ECR_REPO: 190073735177.dkr.ecr.eu-west-1.amazonaws.com/utility
+
 jobs:
-  build-and-deploy-container-image:
+
+  update-packages:
+    if: ${{ github.event_name == 'schedule' }}
     runs-on: ubuntu-latest
+    env:
+      jdk: 8
+      servicekind: fatjar
+      tomcat: tomcat7
+      variant: fatjar-openjdk8
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build image and check packages
+        shell: bash
+        run: |
+          docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} -t test-alpine .
+          docker run -u root -v $(pwd)/variants/${variant}:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
+          git diff --exit-code $(pwd)/variants/${variant}/package-versions
+          ALPINE=$?
+
+          docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} -t test-azlinux2 .
+          docker run -u root -v $(pwd)/variants/${variant}-corretto:/repository test-azlinux2 /bin/sh -c "rpm -qa | sort > /repository/package-versions && chmod 755 /repository/package-versions"
+          git diff --exit-code $(pwd)/variants/${variant}-corretto/package-versions
+          AZ2=$?
+
+          if [ "$ALPINE" -ne 0 ] || [ "$AZ2" -ne 0 ]; then
+            echo "Updating packages"
+            git config --global user.name "Github Actions"
+            git config --global user.email "github-actions@opintopolku.fi"
+            git commit -a -m 'Update baseimage packages' || true
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+            curl -H "Content-Type: application/json" -X POST \
+              --data "{\"text\": \"Baseimage: packages updated by Github Actions\"}" \
+              ${PILVIKEHITYS_SLACK_TOKEN} 
+          else
+            echo "No update needed"
+          fi
+    
+  build:
+    if: ${{ github.event_name != 'schedule' }}
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: true
+      matrix:
+        jdk: [8, 11, 17]
+        servicekind: [fatjar, war]
+        tomcat: [tomcat7, tomcat8]
+        exclude:
+          - jdk: 17
+            servicekind: war
+          - servicekind: fatjar
+            tomcat: tomcat8
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up variables
         shell: bash
         run: |
-          export ECR_REPO=190073735177.dkr.ecr.eu-west-1.amazonaws.com/utility
-          export IMAGE_LABEL=ga-${GITHUB_RUN_NUMBER}
-          echo "ecr_repo=${ECR_REPO}" >> $GITHUB_ENV
-          echo "image_label=${IMAGE_LABEL}" >> $GITHUB_ENV
-          echo "docker_target=${ECR_REPO}/baseimage:${IMAGE_LABEL}" >> $GITHUB_ENV
-      - name: Build container image
-        shell: bash
-        env:
-          DOCKER_TARGET: ${{ env.docker_target }}
-          ECR_REPO: ${{ env.ecr_repo }}
-          IMAGE_LABEL: ${{ env.image_label }}
-        run: |
-          export BUILD_TIME=$(date --iso-8601=seconds)
-          docker build --label BaseimageType="fatjar-openjdk8" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk8:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=8 --build-arg SERVICE_KIND=fatjar --build-arg TOMCAT_VERSION=tomcat7 .
-          docker build --label BaseimageType="fatjar-openjdk11" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk11:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=11 --build-arg SERVICE_KIND=fatjar --build-arg TOMCAT_VERSION=tomcat7 .
-          docker build -f Dockerfile-corretto --label BaseimageType="fatjar-openjdk17" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk17:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=17 --build-arg SERVICE_KIND=fatjar --build-arg TOMCAT_VERSION=tomcat7 .
-          docker build --label BaseimageType="war-openjdk8" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk8:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=8 --build-arg SERVICE_KIND=war --build-arg TOMCAT_VERSION=tomcat7 .
-          docker build --label BaseimageType="war-tomcat8-openjdk8" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-tomcat8-openjdk8:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=8 --build-arg SERVICE_KIND=war-tomcat8 --build-arg TOMCAT_VERSION=tomcat8 .
-          docker build --label BaseimageType="war-openjdk11" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk11:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=11 --build-arg SERVICE_KIND=war --build-arg TOMCAT_VERSION=tomcat7 .
-          docker build --label BaseimageType="war-tomcat8-openjdk11" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-tomcat8-openjdk11:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=11 --build-arg SERVICE_KIND=war-tomcat8 --build-arg TOMCAT_VERSION=tomcat8 .
-          docker build -f Dockerfile-corretto-v2 --label BaseimageType="fatjar-openjdk8-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk8-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=8 --build-arg SERVICE_KIND=fatjar --build-arg TOMCAT_VERSION=tomcat7 .
-          docker build -f Dockerfile-corretto-v2 --label BaseimageType="fatjar-openjdk11-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk11-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=11 --build-arg SERVICE_KIND=fatjar --build-arg TOMCAT_VERSION=tomcat7 .
-          docker build -f Dockerfile-corretto-v2 --label BaseimageType="fatjar-openjdk17-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-fatjar-openjdk17-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=17 --build-arg SERVICE_KIND=fatjar --build-arg TOMCAT_VERSION=tomcat7 .
-          docker build -f Dockerfile-corretto-v2 --label BaseimageType="war-tomcat8-openjdk8-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-tomcat8-openjdk8-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=8 --build-arg SERVICE_KIND=war-tomcat8 --build-arg TOMCAT_VERSION=tomcat8 .
-          docker build -f Dockerfile-corretto-v2 --label BaseimageType="war-openjdk8-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk8-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=8 --build-arg SERVICE_KIND=war --build-arg TOMCAT_VERSION=tomcat7 .
-          docker build -f Dockerfile-corretto-v2 --label BaseimageType="war-openjdk11-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-openjdk11-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=11 --build-arg SERVICE_KIND=war --build-arg TOMCAT_VERSION=tomcat7 .
-          docker build -f Dockerfile-corretto-v2 --label BaseimageType="war-tomcat8-openjdk11-corretto" --label BaseimageBuildNumber=${IMAGE_LABEL} --label BaseimageBuildTime=${BUILD_TIME} -t ${ECR_REPO}/baseimage-war-tomcat8-openjdk11-corretto:${IMAGE_LABEL} --build-arg OPENJDK_VERSION=11 --build-arg SERVICE_KIND=war-tomcat8 --build-arg TOMCAT_VERSION=tomcat8 .          
+          echo "IMAGE_LABEL=ga-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+          echo "BUILD_TIME=$(date --iso-8601=seconds)" >> $GITHUB_ENV
+          if [ "${{ matrix.tomcat }}" = "tomcat8" ]
+          then
+            echo "FOLDER=${{ matrix.servicekind }}-${{ matrix.tomcat }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
+          else
+            echo "FOLDER=${{ matrix.servicekind }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
+          fi
 
-      - name: Version check
-        if: ${{ github.event_name == 'schedule' }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Get ECR Registry
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Docker meta for alpine images
+        id: meta-alpine
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}
+          tags: |
+            type=raw,value=${{ env.IMAGE_LABEL }}
+            type=raw,value=${{ github.ref_name }}
+          labels: |
+            BaseimageType=${{ matrix.servicekind }}-openjdk${{ matrix.jdk }}
+            BaseimageBuildNumber=${{ env.IMAGE_LABEL }}
+            BaseimageBuildTime=${{ env.BUILD_TIME }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Setup buildx
+        uses: docker/setup-buildx-action@v2
+        id: buildx
+      
+      - name: Login to ECR
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ steps.ecr-login.outputs.registry }}
+
+      - name: Build and export to Docker
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64, linux/arm64
+          tags: ${{ steps.meta-alpine.outputs.tags }}
+          labels: ${{ steps.meta-alpine.outputs.labels }}
+          build-args: |
+            SERVICE_KIND=${{ matrix.servicekind }}
+            OPENJDK_VERSION=${{ matrix.jdk }}
+            TOMCAT_VERSION=${{ matrix.tomcat }}
+      
+      - name: Push tags to amd64 child image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ env.IMAGE_LABEL }}-amd64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ github.ref_name }}-amd64
+          labels: ${{ steps.meta-alpine.outputs.labels }}
+          build-args: |
+            SERVICE_KIND=${{ matrix.servicekind }}
+            OPENJDK_VERSION=${{ matrix.jdk }}
+            TOMCAT_VERSION=${{ matrix.tomcat }}
+
+      - name: Push tags to arm64 child image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          platforms: linux/arm64
+          tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ env.IMAGE_LABEL }}-arm64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ github.ref_name }}-arm64
+          labels: ${{ steps.meta-alpine.outputs.labels }}
+          build-args: |
+            SERVICE_KIND=${{ matrix.servicekind }}
+            OPENJDK_VERSION=${{ matrix.jdk }}
+            TOMCAT_VERSION=${{ matrix.tomcat }}
+      
+      - name: Update build metadata
         shell: bash
-        env:
-          ECR_REPO: ${{ env.ecr_repo }}
-          IMAGE_LABEL: ${{ env.image_label }}
-          PILVIKEHITYS_SLACK_TOKEN: ${{ secrets.PILVIKEHITYS_SLACK_TOKEN }}
         run: |
-          $(pwd)/version_check/version_check.sh
-      - name: Deploy container image to ECR
+          aws dynamodb put-item --table-name builds --item "{\"Service\": {\"S\": \"$FOLDER\"}, \"Build\": {\"S\": \"$IMAGE_LABEL\"}, \"Branch\": {\"S\": \"$github.ref_name\"}, \"Commit\": {\"S\": \"$github.sha\"}, \"Time\": {\"S\": \"$BUILD_TIME\"}}" --condition-expression "attribute_not_exists(Id)" --region eu-west-1
+
+      - name: Docker meta for corretto images
+        id: meta-corretto
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto
+          tags: |
+            type=raw,value=${{ env.IMAGE_LABEL }}
+            type=raw,value=${{ github.ref_name }}
+          labels: |
+            BaseimageType=${{ matrix.servicekind }}-openjdk${{ matrix.jdk }}
+            BaseimageBuildNumber=${{ env.IMAGE_LABEL }}
+            BaseimageBuildTime=${{ env.BUILD_TIME }}
+
+      - name: Build and export to Docker
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile.corretto
+          push: true
+          platforms: linux/amd64, linux/arm64
+          tags: ${{ steps.meta-corretto.outputs.tags }}
+          labels: ${{ steps.meta-corretto.outputs.labels }}
+          build-args: |
+            SERVICE_KIND=${{ matrix.servicekind }}
+            OPENJDK_VERSION=${{ matrix.jdk }}
+            TOMCAT_VERSION=${{ matrix.tomcat }}
+      
+      - name: Push tags to amd64 child image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto:${{ env.IMAGE_LABEL }}-amd64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto:${{ github.ref_name }}-amd64
+          labels: ${{ steps.meta-corretto.outputs.labels }}
+          build-args: |
+            SERVICE_KIND=${{ matrix.servicekind }}
+            OPENJDK_VERSION=${{ matrix.jdk }}
+            TOMCAT_VERSION=${{ matrix.tomcat }}
+
+      - name: Push tags to arm64 child image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          platforms: linux/arm64
+          tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto:${{ env.IMAGE_LABEL }}-arm64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto:${{ github.ref_name }}-arm64
+          labels: ${{ steps.meta-corretto.outputs.labels }}
+          build-args: |
+            SERVICE_KIND=${{ matrix.servicekind }}
+            OPENJDK_VERSION=${{ matrix.jdk }}
+            TOMCAT_VERSION=${{ matrix.tomcat }}
+      
+      - name: Update build metadata
         shell: bash
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          GITHUB_RUN_NUMBER: ${{ github.run_number }}
-          ECR_REPO: ${{ env.ecr_repo }}
         run: |
-          git clone https://github.com/Opetushallitus/ci-tools.git
-          aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 190073735177.dkr.ecr.eu-west-1.amazonaws.com
-          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk8 ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk11 ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk17 ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk8 ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk8 ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk11 ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk11 ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk8-corretto ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk11-corretto ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-fatjar-openjdk17-corretto ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk8-corretto ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk8-corretto ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-war-tomcat8-openjdk11-corretto ${GITHUB_REF_NAME}
-          ./ci-tools/github-build/upload-image.sh baseimage-war-openjdk11-corretto ${GITHUB_REF_NAME}
+          aws dynamodb put-item --table-name builds --item "{\"Service\": {\"S\": \"$FOLDER-corretto\"}, \"Build\": {\"S\": \"$IMAGE_LABEL\"}, \"Branch\": {\"S\": \"$github.ref_name\"}, \"Commit\": {\"S\": \"$github.sha\"}, \"Time\": {\"S\": \"$BUILD_TIME\"}}" --condition-expression "attribute_not_exists(Id)" --region eu-west-1
+

@@ -1,6 +1,13 @@
 # Strict mode
 set -eu
 
+case "$(uname -m)" in
+  aarch64) ARCHITECTURE="arm64" ;;
+  x86_64) ARCHITECTURE="amd64" ;;
+  *) ARCHITECTURE=$(uname -m) ;;
+esac
+echo $ARCHITECTURE
+
 echo "Installing dependencies"
 apk update
 apk --no-cache add \
@@ -15,9 +22,15 @@ apk --no-cache add \
   python3 \
   py-pip \
   py3-jinja2 \
+  ttf-dejavu \
   unzip \
   wget \
-  zip
+  zip \
+  util-linux \
+  musl-utils \
+  musl-locales \
+  musl-locales-lang \
+  tzdata
 
 ln -s /usr/bin/python3 /usr/bin/python
 
@@ -33,22 +46,6 @@ pip3 install \
   six
 rm -rf /root/.cache
 
-echo "Downloading glibc for compiling locale definitions"
-GLIBC_VERSION="2.33-r0"
-wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
-wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-bin-${GLIBC_VERSION}.apk
-wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-i18n-${GLIBC_VERSION}.apk
-
-echo "Installing glibc for compiling locale definitions"
-apk add \
-  glibc-${GLIBC_VERSION}.apk \
-  glibc-bin-${GLIBC_VERSION}.apk \
-  glibc-i18n-${GLIBC_VERSION}.apk
-rm -v glibc-*.apk
-/usr/glibc-compat/bin/localedef -i en_US -f UTF-8 en_US.UTF-8
-/usr/glibc-compat/bin/localedef -i fi_FI -f UTF-8 fi_FI.UTF-8
-
 echo "Creating cache directories for package managers"
 mkdir -p /home/oph/.m2/
 mkdir -p /home/oph/.ivy2/
@@ -57,12 +54,12 @@ mkdir -p /etc/oph
 
 echo "Installing Bouncy Castle bcprov security provider"
 BCPROV_DL_PREFIX="https://www.bouncycastle.org/download"
-BCPROV_PACKAGE="bcprov-jdk15on-163.jar"
-wget -c -q -P /usr/java/latest/jre/lib/ext/ ${BCPROV_DL_PREFIX}/${BCPROV_PACKAGE}
-echo "28155c8695934f666fabc235f992096e40d97ecb044d5b6b0902db6e15a0b72f  /usr/java/latest/jre/lib/ext/${BCPROV_PACKAGE}" |sha256sum -c
+BCPROV_PACKAGE="bcprov-jdk18on-171.jar"
+wget -c -q -P ${JAVA_HOME}/jre/lib/ext/ ${BCPROV_DL_PREFIX}/${BCPROV_PACKAGE}
+echo "f3433a97d780fe9fa3dc3d562a41decd59b2e617ce884de9060349ac14750045  ${JAVA_HOME}/jre/lib/ext/${BCPROV_PACKAGE}" |sha256sum -c
 
 echo "Updating java.security"
-JAVA_SECURITY_FILE=/opt/java/openjdk/jre/lib/security/java.security
+JAVA_SECURITY_FILE=${JAVA_HOME}/jre/lib/security/java.security
 TMP_SECURITY_FILE=/tmp/java.security.new
 BC_SECURITY_PROVIDER_LINE="security.provider.10=org.bouncycastle.jce.provider.BouncyCastleProvider"
 awk -v line_to_insert="$BC_SECURITY_PROVIDER_LINE" '/^security.provider./ { if (inserted!=1) {print line_to_insert; inserted=1}  } { print $0 }' $JAVA_SECURITY_FILE > $TMP_SECURITY_FILE
@@ -77,12 +74,16 @@ mv jmx_prometheus_javaagent.jar /usr/local/bin/
 
 echo "Installing Prometheus node_exporter"
 NODE_EXPORTER_VERSION="1.3.1"
-wget -q https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz
-echo "68f3802c2dd3980667e4ba65ea2e1fb03f4a4ba026cca375f15a0390ff850949  node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz" |sha256sum -c
-tar -xvzf node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz
-rm node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz
-mv node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64/node_exporter /usr/local/bin/
-rm -rf node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64
+wget -q https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
+case "$ARCHITECTURE" in
+  arm64) echo "f19f35175f87d41545fa7d4657e834e3a37c1fe69f3bf56bc031a256117764e7  node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz" |sha256sum -c ;;
+  amd64) echo "68f3802c2dd3980667e4ba65ea2e1fb03f4a4ba026cca375f15a0390ff850949  node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz" |sha256sum -c ;;
+  *) echo "Unknown architecture" && exit 1
+esac
+tar -xvzf node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
+rm node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
+mv node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}/node_exporter /usr/local/bin/
+rm -rf node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}
 
 echo "Init Prometheus config file"
 echo "{}" > /etc/prometheus.yaml

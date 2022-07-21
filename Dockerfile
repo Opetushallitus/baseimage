@@ -1,5 +1,6 @@
 ARG OPENJDK_VERSION
-FROM eclipse-temurin:${OPENJDK_VERSION}-alpine
+ARG OPT_PKGS="fontconfig ttf-dejavu"
+FROM bellsoft/liberica-openjdk-alpine-musl:${OPENJDK_VERSION}
 
 # need to repeat the argument declaration after FROM for it to be back in scope
 ARG OPENJDK_VERSION
@@ -23,8 +24,6 @@ RUN \
   sh install.sh && \
   sh test.sh && \
   rm *.sh
-
-RUN apk add fontconfig ttf-dejavu util-linux
 
 RUN echo "Remove /root and symlink /root to /home/oph for backwards compatibility"
 RUN rm -rf /root && \
