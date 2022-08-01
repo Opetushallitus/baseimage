@@ -1,13 +1,13 @@
 alpine-baselayout-3.2.0-r18
 alpine-keys-2.4-r1
-amazon-corretto-11-11.0.15.9.1-r0
+amazon-corretto-11-11.0.16.8.1-r0
 apk-tools-2.12.7-r3
 bash-5.1.16-r0
 blkid-2.37.4-r0
 brotli-libs-1.0.9-r5
-busybox-1.34.1-r5
+busybox-1.34.1-r7
 bzip2-1.0.8-r1
-ca-certificates-20211220-r0
+ca-certificates-20220614-r0
 ca-certificates-bundle-20211220-r0
 cfdisk-2.37.4-r0
 encodings-1.0.5-r0
@@ -27,7 +27,7 @@ libblkid-2.37.4-r0
 libbz2-1.0.8-r1
 libc-utils-0.7.2-r3
 libcap-ng-0.8.2-r1
-libcrypto1.1-1.1.1n-r0
+libcrypto1.1-1.1.1q-r0
 libeconf-0.4.2-r0
 libedit-20210910.3.1-r0
 libfdisk-2.37.4-r0
@@ -39,7 +39,7 @@ libmount-2.37.4-r0
 libpng-1.6.37-r1
 libretls-3.3.4-r3
 libsmartcols-2.37.4-r0
-libssl1.1-1.1.1n-r0
+libssl1.1-1.1.1q-r0
 libstdc++-10.3.1_git20211027-r0
 libunistring-0.9.10-r1
 libuuid-2.37.4-r0
@@ -91,14 +91,14 @@ py3-toml-0.10.2-r2
 py3-tomli-1.2.2-r0
 py3-urllib3-1.26.7-r0
 py3-webencodings-0.5.1-r4
-python3-3.9.7-r4
+python3-3.9.13-r1
 readline-8.1.1-r0
 runuser-2.37.4-r0
 scanelf-1.3.3-r0
 setpriv-2.37.4-r0
 sfdisk-2.37.4-r0
 sqlite-libs-3.36.0-r0
-ssl_client-1.34.1-r5
+ssl_client-1.34.1-r7
 ttf-dejavu-2.37-r1
 unzip-6.0-r9
 util-linux-2.37.4-r0
@@ -108,4 +108,4 @@ wget-1.21.2-r2
 wipefs-2.37.4-r0
 xz-libs-5.2.5-r1
 zip-3.0-r9
-zlib-1.2.12-r0
+zlib-1.2.12-r1
