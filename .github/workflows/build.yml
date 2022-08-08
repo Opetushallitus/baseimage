@@ -21,6 +21,7 @@ jobs:
       servicekind: fatjar
       tomcat: tomcat7
       variant: fatjar-openjdk8
+      PILVIKEHITYS_SLACK_TOKEN: ${{ secrets.PILVIKEHITYS_SLACK_TOKEN }}
     steps:
       - uses: actions/checkout@v3
       - name: Build image and check packages
