@@ -30,7 +30,8 @@ apk --no-cache add \
   musl-utils \
   musl-locales \
   musl-locales-lang \
-  tzdata
+  tzdata \
+  freetype
 
 ln -s /usr/bin/python3 /usr/bin/python
 

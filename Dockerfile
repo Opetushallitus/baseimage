@@ -1,6 +1,5 @@
 ARG OPENJDK_VERSION
-ARG OPT_PKGS="fontconfig ttf-dejavu"
-FROM bellsoft/liberica-openjdk-alpine-musl:${OPENJDK_VERSION}
+FROM amazoncorretto:${OPENJDK_VERSION}-alpine
 
 # need to repeat the argument declaration after FROM for it to be back in scope
 ARG OPENJDK_VERSION

@@ -123,7 +123,6 @@ jobs:
         with:
           context: .
           push: true
-          platforms: linux/amd64, linux/arm64
           tags: ${{ steps.meta-alpine.outputs.tags }}
           labels: ${{ steps.meta-alpine.outputs.labels }}
           build-args: |
@@ -131,31 +130,32 @@ jobs:
             OPENJDK_VERSION=${{ matrix.jdk }}
             TOMCAT_VERSION=${{ matrix.tomcat }}
       
-      - name: Push tags to amd64 child image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          platforms: linux/amd64
-          tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ env.IMAGE_LABEL }}-amd64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ github.ref_name }}-amd64
-          labels: ${{ steps.meta-alpine.outputs.labels }}
-          build-args: |
-            SERVICE_KIND=${{ matrix.servicekind }}
-            OPENJDK_VERSION=${{ matrix.jdk }}
-            TOMCAT_VERSION=${{ matrix.tomcat }}
+      # These steps should be used with multiarchitecture image
+      # - name: Push tags to amd64 child image
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     context: .
+      #     push: true
+      #     platforms: linux/amd64
+      #     tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ env.IMAGE_LABEL }}-amd64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ github.ref_name }}-amd64
+      #     labels: ${{ steps.meta-alpine.outputs.labels }}
+      #     build-args: |
+      #       SERVICE_KIND=${{ matrix.servicekind }}
+      #       OPENJDK_VERSION=${{ matrix.jdk }}
+      #       TOMCAT_VERSION=${{ matrix.tomcat }}
 
-      - name: Push tags to arm64 child image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          platforms: linux/arm64
-          tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ env.IMAGE_LABEL }}-arm64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ github.ref_name }}-arm64
-          labels: ${{ steps.meta-alpine.outputs.labels }}
-          build-args: |
-            SERVICE_KIND=${{ matrix.servicekind }}
-            OPENJDK_VERSION=${{ matrix.jdk }}
-            TOMCAT_VERSION=${{ matrix.tomcat }}
+      # - name: Push tags to arm64 child image
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     context: .
+      #     push: true
+      #     platforms: linux/arm64
+      #     tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ env.IMAGE_LABEL }}-arm64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ github.ref_name }}-arm64
+      #     labels: ${{ steps.meta-alpine.outputs.labels }}
+      #     build-args: |
+      #       SERVICE_KIND=${{ matrix.servicekind }}
+      #       OPENJDK_VERSION=${{ matrix.jdk }}
+      #       TOMCAT_VERSION=${{ matrix.tomcat }}
       
       - name: Update build metadata
         shell: bash
@@ -194,6 +194,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
+          file: ./Dockerfile.corretto
           push: true
           platforms: linux/amd64
           tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto:${{ env.IMAGE_LABEL }}-amd64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto:${{ github.ref_name }}-amd64
@@ -208,6 +209,7 @@ jobs:
         with:
           context: .
           push: true
+          file: ./Dockerfile.corretto
           platforms: linux/arm64
           tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto:${{ env.IMAGE_LABEL }}-arm64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto:${{ github.ref_name }}-arm64
           labels: ${{ steps.meta-corretto.outputs.labels }}
