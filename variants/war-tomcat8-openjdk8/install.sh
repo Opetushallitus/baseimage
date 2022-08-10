@@ -59,7 +59,7 @@ echo "Installing Prometheus jmx_exporter"
 JMX_EXPORTER_VERSION="0.17.0"
 wget -q https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VERSION}/jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar
 mv jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar jmx_prometheus_javaagent.jar
-echo "a1061f29088ac2709da076a97736de575a872538  jmx_prometheus_javaagent.jar" |sha1sum -c
+echo "f52f16e90333f2b2e05a47195328a5821b0cd971  jmx_prometheus_javaagent.jar" |sha1sum -c
 mv jmx_prometheus_javaagent.jar /usr/local/bin/
 
 echo "Installing Prometheus node_exporter"
