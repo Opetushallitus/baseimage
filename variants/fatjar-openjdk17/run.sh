@@ -43,7 +43,7 @@ do
 done
 
 echo "Copying keystore file to home directory"
-cp /usr/lib/jvm/java-17-amazon-corretto/lib/security/cacerts /home/oph/
+cp ${JAVA_HOME}/jre/lib/security/cacerts /home/oph/
 
 export LC_CTYPE=fi_FI.UTF-8
 export JAVA_TOOL_OPTIONS='-Dfile.encoding=UTF-8'
@@ -67,6 +67,32 @@ STANDALONE_JAR=/usr/local/bin/${NAME}.jar
 if [ -f "${STANDALONE_JAR}" ]; then
     echo "Starting standalone application..."
 
+    # Service-specific boot-time exceptions
+    if [ ${NAME} == "suoritusrekisteri" ]; then
+      echo "Create common.properties"
+      cp -fv ${BASEPATH}/oph-configuration/${NAME}.properties ${BASEPATH}/oph-configuration/common.properties
+
+      YTLCERT="${CONFIGPATH}/suoritusrekisteri/ytlqa.crt"
+      if [ -f "${YTLCERT}" ]; then
+        echo "Installing YTL certificate for suoritusrekisteri"
+        TRUSTSTORE_PWD=$(grep "java_cacerts_pwd" /home/oph/oph-environment/opintopolku.yml | cut -d ":" -f 2 | sed "s/^ *//g")
+        keytool -import -noprompt -trustcacerts -alias ytl_qa_cert -storepass ${TRUSTSTORE_PWD} -keystore /home/oph/cacerts -file ${YTLCERT}
+      fi
+    elif [ ${NAME} == "ataru-hakija" ]; then
+      export ATARU_HTTP_PORT=8080
+      export CONFIG=/home/oph/oph-configuration/config.edn
+      export CONFIGDEFAULTS=/home/oph/oph-configuration/config.edn
+      export APP="ataru-hakija"
+    elif [ ${NAME} == "ataru-editori" ]; then
+      export ATARU_HTTP_PORT=8080
+      export CONFIG=/home/oph/oph-configuration/config.edn
+      export CONFIGDEFAULTS=/home/oph/oph-configuration/config.edn
+      export APP="ataru-editori"
+    elif [ ${NAME} == "osaan" ]; then
+        echo "Running osaan database migration"
+        java -jar /usr/local/bin/osaan-db.jar -u oph
+    fi
+
     export HOME="/home/oph"
     export LOGS="${HOME}/logs"
 
@@ -78,7 +104,16 @@ if [ -f "${STANDALONE_JAR}" ]; then
     JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8"
     JAVA_OPTS="$JAVA_OPTS -Dlogback.access=${LOGPATH}/logback-access.xml"
     JAVA_OPTS="$JAVA_OPTS -Dlogbackaccess.configurationFile=${LOGPATH}/logback-access.xml"
-    JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${LOGPATH}/logback-standalone.xml"
+    if [ ${NAME} == "liiteri" ]; then
+        JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${LOGPATH}/logback-liiteri.xml"
+    elif [ ${NAME} == "virkailijan-tyopoyta" ]; then
+        JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${HOME}/oph-configuration/logback.xml"
+    elif [ ${NAME} == "oti" ]; then
+        JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${HOME}/oph-configuration/logback.xml"
+    else
+        # at least hakuperusteet seems to need this
+        JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${LOGPATH}/logback-standalone.xml"
+    fi
     JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote"
     JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
     JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.ssl=false"

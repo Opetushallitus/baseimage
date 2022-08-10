@@ -2,11 +2,11 @@
 set -eu
 
 echo "Test that required software is installed"
-apk --version
+yum --version
 aws --version
 java -version
 j2 --version
-cat /etc/alpine-release
+cat /etc/os-release
 
 echo "Test that baseimage has files expected by the application during run script"
 ls -la /opt/tomcat/bin/catalina.sh

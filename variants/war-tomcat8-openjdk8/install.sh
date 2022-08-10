@@ -7,17 +7,23 @@ apk --no-cache add \
   bash \
   bzip2 \
   ca-certificates \
-  fontconfig \
   jq \
   openssh \
   openssl \
   python3 \
   py-pip \
   py3-jinja2 \
-  ttf-dejavu \
   unzip \
+  fontconfig \
+  ttf-dejavu \
   wget \
-  zip
+  zip \
+  util-linux \
+  musl-utils \
+  musl-locales \
+  musl-locales-lang \
+  tzdata \
+  freetype
 
 ln -s /usr/bin/python3 /usr/bin/python
 
@@ -38,22 +44,6 @@ pip3 install \
   six
 rm -rf /root/.cache
 
-echo "Downloading glibc for compiling locale definitions"
-GLIBC_VERSION="2.33-r0"
-wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk
-wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-bin-${GLIBC_VERSION}.apk
-wget -q https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-i18n-${GLIBC_VERSION}.apk
-
-echo "Installing glibc for compiling locale definitions"
-apk add \
-  glibc-${GLIBC_VERSION}.apk \
-  glibc-bin-${GLIBC_VERSION}.apk \
-  glibc-i18n-${GLIBC_VERSION}.apk
-rm -v glibc-*.apk
-/usr/glibc-compat/bin/localedef -i en_US -f UTF-8 en_US.UTF-8
-/usr/glibc-compat/bin/localedef -i fi_FI -f UTF-8 fi_FI.UTF-8
-
 echo "Creating cache directories for package managers"
 mkdir /home/oph/.m2/
 mkdir /home/oph/.ivy2/
@@ -66,13 +56,17 @@ echo "a1061f29088ac2709da076a97736de575a872538  jmx_prometheus_javaagent.jar" |s
 mv jmx_prometheus_javaagent.jar /usr/local/bin/
 
 echo "Installing Prometheus node_exporter"
-NODE_EXPORTER_VERSION="1.1.1"
-wget -q https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz
-echo "9e42030befe27a473f288b6c4d003b76573a70836b50d1abff26d0de4cf42860  node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz" |sha256sum -c
-tar -xvzf node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz
-rm node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz
-mv node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64/node_exporter /usr/local/bin/
-rm -rf node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64
+NODE_EXPORTER_VERSION="1.3.1"
+wget -q https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
+case "$ARCHITECTURE" in
+  arm64) echo "f19f35175f87d41545fa7d4657e834e3a37c1fe69f3bf56bc031a256117764e7  node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz" |sha256sum -c ;;
+  amd64) echo "68f3802c2dd3980667e4ba65ea2e1fb03f4a4ba026cca375f15a0390ff850949  node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz" |sha256sum -c ;;
+  *) echo "Unknown architecture" && exit 1
+esac
+tar -xvzf node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
+rm node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
+mv node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}/node_exporter /usr/local/bin/
+rm -rf node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}
 
 echo "Init Prometheus config file"
 echo "{}" > /etc/prometheus.yaml

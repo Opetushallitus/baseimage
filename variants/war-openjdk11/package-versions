@@ -16,9 +16,9 @@ flock-2.37.4-r0
 fontconfig-2.13.1-r4
 freetype-2.10.4-r3
 gdbm-1.19-r0
-glibc-2.33-r0
-glibc-bin-2.33-r0
-glibc-i18n-2.33-r0
+glibc-2.35-r0
+glibc-bin-2.35-r0
+glibc-i18n-2.35-r0
 hexdump-2.37.4-r0
 jq-1.6-r1
 libblkid-2.37.4-r0
@@ -96,7 +96,6 @@ sqlite-libs-3.35.5-r0
 ssl_client-1.33.1-r8
 ttf-dejavu-2.37-r1
 unzip-6.0-r9
-util-linux-2.37.4-r0
 uuidgen-2.37.4-r0
 wget-1.21.1-r1
 xz-libs-5.2.5-r1

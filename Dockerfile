@@ -1,5 +1,5 @@
 ARG OPENJDK_VERSION
-FROM adoptopenjdk/${OPENJDK_VERSION}:alpine-slim
+FROM amazoncorretto:${OPENJDK_VERSION}-alpine
 
 # need to repeat the argument declaration after FROM for it to be back in scope
 ARG OPENJDK_VERSION
@@ -9,7 +9,7 @@ ARG TOMCAT_VERSION
 RUN addgroup -S oph -g 1001 && adduser -u 1001 -D -G oph oph
 
 COPY common/dump_threads.sh /usr/local/bin/
-COPY variants/${SERVICE_KIND}-${OPENJDK_VERSION}/run.sh /usr/local/bin/run
+COPY variants/${SERVICE_KIND}-openjdk${OPENJDK_VERSION}/run.sh /usr/local/bin/run
 
 # These are actually only used in case SERVICE_KIND = war:
 COPY tomcat-files/${TOMCAT_VERSION}/server.xml /tmp/tomcat/conf/
@@ -17,14 +17,12 @@ COPY tomcat-files/${TOMCAT_VERSION}/ehcache.xml /etc/oph/oph-configuration/
 COPY tomcat-files/${TOMCAT_VERSION}/jars/*.jar /tmp/tomcat/lib/
 
 WORKDIR /root/
-COPY variants/${SERVICE_KIND}-${OPENJDK_VERSION}/install.sh ./
-COPY variants/${SERVICE_KIND}-${OPENJDK_VERSION}/test.sh ./
+COPY variants/${SERVICE_KIND}-openjdk${OPENJDK_VERSION}/install.sh ./
+COPY variants/${SERVICE_KIND}-openjdk${OPENJDK_VERSION}/test.sh ./
 RUN \
   sh install.sh && \
   sh test.sh && \
   rm *.sh
-
-RUN apk add fontconfig ttf-dejavu util-linux
 
 RUN echo "Remove /root and symlink /root to /home/oph for backwards compatibility"
 RUN rm -rf /root && \
