@@ -1,6 +1,13 @@
 # Strict mode
 set -eu
 
+case "$(uname -m)" in
+  aarch64) ARCHITECTURE="arm64" ;;
+  x86_64) ARCHITECTURE="amd64" ;;
+  *) ARCHITECTURE=$(uname -m) ;;
+esac
+echo $ARCHITECTURE
+
 echo "Installing dependencies"
 apk update
 apk --no-cache add \
@@ -30,7 +37,7 @@ ln -s /usr/bin/python3 /usr/bin/python
 echo "Kludging font libraries in place"
 ln -s /usr/lib/libfontconfig.so.1 /usr/lib/libfontconfig.so && \
   ln -s /lib/libuuid.so.1 /usr/lib/libuuid.so.1 && \
-  ln -s /lib/libc.musl-x86_64.so.1 /usr/lib/libc.musl-x86_64.so.1
+  ln -s /lib/libc.musl-$(uname -m).so.1 /usr/lib/libc.musl-$(uname -m).so.1
 
 echo "Installing tools for downloading environment configuration during service run script"
 pip3 install --upgrade pip
@@ -49,7 +56,7 @@ mkdir /home/oph/.m2/
 mkdir /home/oph/.ivy2/
 
 echo "Installing Prometheus jmx_exporter"
-JMX_EXPORTER_VERSION="0.15.0"
+JMX_EXPORTER_VERSION="0.17.0"
 wget -q https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VERSION}/jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar
 mv jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar jmx_prometheus_javaagent.jar
 echo "a1061f29088ac2709da076a97736de575a872538  jmx_prometheus_javaagent.jar" |sha1sum -c
