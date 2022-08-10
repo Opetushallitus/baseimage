@@ -5,12 +5,13 @@ FROM amazoncorretto:${OPENJDK_VERSION}
 ARG OPENJDK_VERSION
 ARG SERVICE_KIND
 ARG TOMCAT_VERSION
+ARG FOLDER
 
-RUN yum install -y shadow-utils
+RUN yum install -y shadow-utils && yum clean all && rm -rf /var/cache/yum
 RUN groupadd --system --gid 1001 oph && adduser --uid 1001 --comment '' --gid oph oph
 
 COPY common/dump_threads.sh /usr/local/bin/
-COPY variants/${SERVICE_KIND}-openjdk${OPENJDK_VERSION}-corretto/run.sh /usr/local/bin/run
+COPY variants/${FOLDER}/run.sh /usr/local/bin/run
 
 # These are actually only used in case SERVICE_KIND = war:
 COPY tomcat-files/${TOMCAT_VERSION}/server.xml /tmp/tomcat/conf/
@@ -18,8 +19,8 @@ COPY tomcat-files/${TOMCAT_VERSION}/ehcache.xml /etc/oph/oph-configuration/
 COPY tomcat-files/${TOMCAT_VERSION}/jars/*.jar /tmp/tomcat/lib/
 
 WORKDIR /root/
-COPY variants/${SERVICE_KIND}-openjdk${OPENJDK_VERSION}-corretto/install.sh ./
-COPY variants/${SERVICE_KIND}-openjdk${OPENJDK_VERSION}-corretto/test.sh ./
+COPY variants/${FOLDER}/install.sh ./
+COPY variants/${FOLDER}/test.sh ./
 RUN \
   sh install.sh && \
   sh test.sh && \

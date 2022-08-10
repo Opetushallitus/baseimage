@@ -27,12 +27,12 @@ jobs:
       - name: Build image and check packages
         shell: bash
         run: |
-          docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} -t test-alpine .
+          docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} --build-arg FOLDER=${variant} -t test-alpine .
           docker run -u root -v $(pwd)/variants/${variant}:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
           git diff --exit-code $(pwd)/variants/${variant}/package-versions
           ALPINE=$?
 
-          docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} -t test-azlinux2 .
+          docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} --build-arg FOLDER=${variant}-corretto -t test-azlinux2 .
           docker run -u root -v $(pwd)/variants/${variant}-corretto:/repository test-azlinux2 /bin/sh -c "rpm -qa | sort > /repository/package-versions && chmod 755 /repository/package-versions"
           git diff --exit-code $(pwd)/variants/${variant}-corretto/package-versions
           AZ2=$?
@@ -129,6 +129,7 @@ jobs:
             SERVICE_KIND=${{ matrix.servicekind }}
             OPENJDK_VERSION=${{ matrix.jdk }}
             TOMCAT_VERSION=${{ matrix.tomcat }}
+            FOLDER=${{ env.FOLDER }}
       
       # These steps should be used with multiarchitecture image
       # - name: Push tags to amd64 child image
@@ -189,6 +190,7 @@ jobs:
             SERVICE_KIND=${{ matrix.servicekind }}
             OPENJDK_VERSION=${{ matrix.jdk }}
             TOMCAT_VERSION=${{ matrix.tomcat }}
+            FOLDER=${{ env.FOLDER }}-corretto
       
       - name: Push tags to amd64 child image
         uses: docker/build-push-action@v3
@@ -203,6 +205,7 @@ jobs:
             SERVICE_KIND=${{ matrix.servicekind }}
             OPENJDK_VERSION=${{ matrix.jdk }}
             TOMCAT_VERSION=${{ matrix.tomcat }}
+            FOLDER=${{ env.FOLDER }}-corretto
 
       - name: Push tags to arm64 child image
         uses: docker/build-push-action@v3
@@ -217,6 +220,7 @@ jobs:
             SERVICE_KIND=${{ matrix.servicekind }}
             OPENJDK_VERSION=${{ matrix.jdk }}
             TOMCAT_VERSION=${{ matrix.tomcat }}
+            FOLDER=${{ env.FOLDER }}-corretto
       
       - name: Update build metadata
         shell: bash

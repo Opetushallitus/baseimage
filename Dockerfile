@@ -5,11 +5,12 @@ FROM amazoncorretto:${OPENJDK_VERSION}-alpine
 ARG OPENJDK_VERSION
 ARG SERVICE_KIND
 ARG TOMCAT_VERSION
+ARG FOLDER
 
 RUN addgroup -S oph -g 1001 && adduser -u 1001 -D -G oph oph
 
 COPY common/dump_threads.sh /usr/local/bin/
-COPY variants/${SERVICE_KIND}-openjdk${OPENJDK_VERSION}/run.sh /usr/local/bin/run
+COPY variants/${FOLDER}/run.sh /usr/local/bin/run
 
 # These are actually only used in case SERVICE_KIND = war:
 COPY tomcat-files/${TOMCAT_VERSION}/server.xml /tmp/tomcat/conf/
@@ -17,8 +18,8 @@ COPY tomcat-files/${TOMCAT_VERSION}/ehcache.xml /etc/oph/oph-configuration/
 COPY tomcat-files/${TOMCAT_VERSION}/jars/*.jar /tmp/tomcat/lib/
 
 WORKDIR /root/
-COPY variants/${SERVICE_KIND}-openjdk${OPENJDK_VERSION}/install.sh ./
-COPY variants/${SERVICE_KIND}-openjdk${OPENJDK_VERSION}/test.sh ./
+COPY variants/${FOLDER}/install.sh ./
+COPY variants/${FOLDER}/test.sh ./
 RUN \
   sh install.sh && \
   sh test.sh && \
