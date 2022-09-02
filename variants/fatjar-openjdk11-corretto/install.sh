@@ -30,7 +30,8 @@ yum update -y && yum install -y \
   dejavu-fonts-common \
   glibc-locale-source \
   glibc-langpack-en \
-  glibc-langpack-fi && yum clean all && rm -rf /var/cache/yum
+  glibc-langpack-fi \
+  tzdata && yum clean all && rm -rf /var/cache/yum
 
 echo "Installing tools for downloading environment configuration during service run script"
 pip3 install --upgrade pip
