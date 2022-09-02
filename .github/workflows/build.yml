@@ -26,6 +26,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build image and check packages
         shell: bash
+        continue-on-error: true
         run: |
           docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} --build-arg FOLDER=${variant} -t test-alpine .
           docker run -u root -v $(pwd)/variants/${variant}:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
