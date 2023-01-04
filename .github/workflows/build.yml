@@ -30,15 +30,13 @@ jobs:
         run: |
           docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} --build-arg FOLDER=${variant} -t test-alpine .
           docker run -u root -v $(pwd)/variants/${variant}:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
-          git diff --exit-code $(pwd)/variants/${variant}/package-versions
-          ALPINE=$?
+          ALPINE=$(git diff --shortstat $(pwd)/variants/${variant}/package-versions)
 
           docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} --build-arg FOLDER=${variant}-corretto -t test-azlinux2 .
           docker run -u root -v $(pwd)/variants/${variant}-corretto:/repository test-azlinux2 /bin/sh -c "rpm -qa | sort > /repository/package-versions && chmod 755 /repository/package-versions"
-          git diff --exit-code $(pwd)/variants/${variant}-corretto/package-versions
-          AZ2=$?
+          AZ2=$(git diff $(pwd)/variants/${variant}-corretto/package-versions)
 
-          if [ "$ALPINE" -ne 0 ] || [ "$AZ2" -ne 0 ]; then
+          if [ -z "$ALPINE" ] || [ -z "$AZ2" ]; then
             echo "Updating packages"
             git config --global user.name "Github Actions"
             git config --global user.email "github-actions@opintopolku.fi"
