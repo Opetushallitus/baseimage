@@ -34,9 +34,9 @@ jobs:
 
           docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} --build-arg FOLDER=${variant}-corretto -t test-azlinux2 .
           docker run -u root -v $(pwd)/variants/${variant}-corretto:/repository test-azlinux2 /bin/sh -c "rpm -qa | sort > /repository/package-versions && chmod 755 /repository/package-versions"
-          AZ2=$(git diff $(pwd)/variants/${variant}-corretto/package-versions)
+          AZ2=$(git diff --shortstat $(pwd)/variants/${variant}-corretto/package-versions)
 
-          if [ -z "$ALPINE" ] || [ -z "$AZ2" ]; then
+          if [ -n "$ALPINE" ] || [ -n "$AZ2" ]; then
             echo "Updating packages"
             git config --global user.name "Github Actions"
             git config --global user.email "github-actions@opintopolku.fi"
