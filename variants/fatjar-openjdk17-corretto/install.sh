@@ -54,6 +54,10 @@ mkdir -p /home/oph/.ivy2/
 
 mkdir -p /etc/oph
 
+echo "Updating java.security"
+JAVA_SECURITY_FILE=$JAVA_HOME/conf/security/java.security
+sed -i 's/#*networkaddress.cache.ttl=.*/networkaddress.cache.ttl=30/g' $JAVA_SECURITY_FILE
+
 echo "Installing Prometheus jmx_exporter"
 JMX_EXPORTER_VERSION="0.17.0"
 wget -q https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VERSION}/jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar

@@ -60,10 +60,11 @@ wget -c -q -P ${JAVA_HOME}/jre/lib/ext/ ${BCPROV_DL_PREFIX}/${BCPROV_PACKAGE}
 echo "f3433a97d780fe9fa3dc3d562a41decd59b2e617ce884de9060349ac14750045  ${JAVA_HOME}/jre/lib/ext/${BCPROV_PACKAGE}" |sha256sum -c
 
 echo "Updating java.security"
-JAVA_SECURITY_FILE=${JAVA_HOME}/jre/lib/security/java.security
+JAVA_SECURITY_FILE=$JAVA_HOME/jre/lib/security/java.security
 TMP_SECURITY_FILE=/tmp/java.security.new
 BC_SECURITY_PROVIDER_LINE="security.provider.10=org.bouncycastle.jce.provider.BouncyCastleProvider"
 awk -v line_to_insert="$BC_SECURITY_PROVIDER_LINE" '/^security.provider./ { if (inserted!=1) {print line_to_insert; inserted=1}  } { print $0 }' $JAVA_SECURITY_FILE > $TMP_SECURITY_FILE
+sed -i 's/#*networkaddress.cache.ttl=.*/networkaddress.cache.ttl=30/g' $TMP_SECURITY_FILE
 mv $TMP_SECURITY_FILE $JAVA_SECURITY_FILE
 
 echo "Installing Prometheus jmx_exporter"
