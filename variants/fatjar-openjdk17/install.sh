@@ -33,7 +33,7 @@ apk --no-cache add \
   tzdata \
   freetype
 
-ln -s /usr/bin/python3 /usr/bin/python
+ln -sf /usr/bin/python3 /usr/bin/python
 
 echo "Kludging font libraries in place"
 ln -s /usr/lib/libfontconfig.so.1 /usr/lib/libfontconfig.so && \
