@@ -78,6 +78,11 @@ rm node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
 mv node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}/node_exporter /usr/local/bin/
 rm -rf node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}
 
+echo "Installing Otel agent"
+OTEL_VERSION="1.21.1"
+wget -q https://github.com/aws-observability/aws-otel-java-instrumentation/releases/download/${OTEL_VERSION}/aws-opentelemetry-agent.jar
+mv aws-opentelemetry-agent.jar /usr/local/bin/
+
 echo "Init Prometheus config file"
 echo "{}" > /etc/prometheus.yaml
 

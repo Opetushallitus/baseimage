@@ -60,6 +60,14 @@ else
   DEBUG_PARAMS=""
 fi
 
+if [ ${TRACE_ENABLED} == "true" ]; then
+  echo "OTEL enabled..."
+  TRACE_PARAMS=" -javaagent:/usr/local/bin/aws-opentelemetry-agent.jar"
+else
+  echo "OTEL disabled..."
+  TRACE_PARAMS=""
+fi
+
 echo "Using java options: ${JAVA_OPTS}"
 echo "Using secret java options: ${SECRET_JAVA_OPTS}"
 
@@ -127,6 +135,7 @@ if [ -f "${STANDALONE_JAR}" ]; then
     JAVA_OPTS="$JAVA_OPTS -XX:ErrorFile=${LOGS}/${NAME}_hs_err.log"
     JAVA_OPTS="$JAVA_OPTS -D${NAME}.properties=${HOME}/oph-configuration/${NAME}.properties"
     JAVA_OPTS="$JAVA_OPTS -javaagent:/usr/local/bin/jmx_prometheus_javaagent.jar=1134:/etc/prometheus.yaml"
+    JAVA_OPTS="$JAVA_OPTS ${TRACE_PARAMS}"
     JAVA_OPTS="$JAVA_OPTS ${SECRET_JAVA_OPTS}"
     JAVA_OPTS="$JAVA_OPTS ${DEBUG_PARAMS}"
     JAVA_CMD="java ${JAVA_OPTS} -jar ${STANDALONE_JAR}"
