@@ -32,7 +32,7 @@ jobs:
           docker run -u root -v $(pwd)/variants/${variant}:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
           ALPINE=$(git diff --shortstat $(pwd)/variants/${variant}/package-versions)
 
-          docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} --build-arg FOLDER=${variant}-corretto -t test-azlinux2 .
+          docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} --build-arg FOLDER=${variant}-corretto -t test-azlinux2 -f Dockerfile.corretto .
           docker run -u root -v $(pwd)/variants/${variant}-corretto:/repository test-azlinux2 /bin/sh -c "rpm -qa | sort > /repository/package-versions && chmod 755 /repository/package-versions"
           AZ2=$(git diff --shortstat $(pwd)/variants/${variant}-corretto/package-versions)
 
