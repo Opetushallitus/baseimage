@@ -19,7 +19,7 @@ apk --no-cache add \
   lftp \
   openssh \
   openssl \
-  python3 \py-pip \
+  python3 \
   py3-jinja2 \
   ttf-dejavu \
   unzip \

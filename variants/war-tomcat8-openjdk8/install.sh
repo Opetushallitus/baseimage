@@ -17,7 +17,7 @@ apk --no-cache add \
   jq \
   openssh \
   openssl \
-  python3 \py-pip \
+  python3 \
   py3-jinja2 \
   unzip \
   fontconfig \
