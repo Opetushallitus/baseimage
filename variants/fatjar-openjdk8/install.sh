@@ -19,8 +19,7 @@ apk --no-cache add \
   lftp \
   openssh \
   openssl \
-  python3 \
-  py-pip \
+  python3 \py-pip \
   py3-jinja2 \
   ttf-dejavu \
   unzip \
@@ -36,8 +35,8 @@ apk --no-cache add \
 ln -sf /usr/bin/python3 /usr/bin/python
 
 echo "Installing tools for downloading environment configuration during service run script"
-pip3 install --upgrade pip
-pip3 install \
+python -m ensurepip --upgrade
+python -m pip install \
   awscli \
   docker-py \
   j2cli \

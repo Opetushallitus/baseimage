@@ -18,8 +18,7 @@ apk --no-cache add \
   jq \
   openssh \
   openssl \
-  python3 \
-  py-pip \
+  python3 \py-pip \
   py3-jinja2 \
   ttf-dejavu \
   unzip \
@@ -40,8 +39,8 @@ ln -s /usr/lib/libfontconfig.so.1 /usr/lib/libfontconfig.so && \
   ln -s /lib/libc.musl-$(uname -m).so.1 /usr/lib/libc.musl-$(uname -m).so.1
 
 echo "Installing tools for downloading environment configuration during service run script"
-pip3 install --upgrade pip
-pip3 install \
+python -m ensurepip --upgrade
+python -m pip install \
   awscli \
   docker-py \
   j2cli \

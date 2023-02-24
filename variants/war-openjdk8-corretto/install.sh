@@ -19,7 +19,6 @@ yum update -y && yum install -y \
   openssh-server \
   openssl \
   python3 \
-  python3-pip \
   python3-jinja2 \
   unzip \
   wget \
@@ -34,8 +33,8 @@ yum update -y && yum install -y \
   tzdata && yum clean all && rm -rf /var/cache/yum
 
 echo "Installing tools for downloading environment configuration during service run script"
-pip3 install --upgrade pip
-pip3 install \
+python -m ensurepip --upgrade
+python -m pip install \
   awscli \
   docker-py \
   j2cli \
