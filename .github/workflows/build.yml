@@ -122,7 +122,7 @@ jobs:
           registry: ${{ steps.ecr-login.outputs.registry }}
 
       - name: Build and export to Docker
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: true
@@ -136,7 +136,7 @@ jobs:
       
       # These steps should be used with multiarchitecture image
       # - name: Push tags to amd64 child image
-      #   uses: docker/build-push-action@v3
+      #   uses: docker/build-push-action@v4
       #   with:
       #     context: .
       #     push: true
@@ -149,7 +149,7 @@ jobs:
       #       TOMCAT_VERSION=${{ matrix.tomcat }}
 
       # - name: Push tags to arm64 child image
-      #   uses: docker/build-push-action@v3
+      #   uses: docker/build-push-action@v4
       #   with:
       #     context: .
       #     push: true
@@ -181,7 +181,7 @@ jobs:
             BaseimageBuildTime=${{ env.BUILD_TIME }}
 
       - name: Build and export to Docker
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile.corretto
@@ -196,7 +196,7 @@ jobs:
             FOLDER=${{ env.FOLDER }}-corretto
       
       - name: Push tags to amd64 child image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile.corretto
@@ -211,7 +211,7 @@ jobs:
             FOLDER=${{ env.FOLDER }}-corretto
 
       - name: Push tags to arm64 child image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: true
