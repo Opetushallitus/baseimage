@@ -55,7 +55,7 @@ mkdir /home/oph/.m2/
 mkdir /home/oph/.ivy2/
 
 echo "Updating java.security"
-JAVA_SECURITY_FILE=$JAVA_HOME/jre/lib/security/java.security
+JAVA_SECURITY_FILE=$JAVA_HOME/lib/security/java.security
 sed -i 's/#*networkaddress.cache.ttl=.*/networkaddress.cache.ttl=30/g' $JAVA_SECURITY_FILE
 
 echo "Installing Prometheus jmx_exporter"
