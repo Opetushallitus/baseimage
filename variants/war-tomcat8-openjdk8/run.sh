@@ -76,6 +76,14 @@ else
   DEBUG_PARAMS=""
 fi
 
+if [ ${TRACE_ENABLED} == "true" ]; then
+  echo "OTEL enabled..."
+  TRACE_PARAMS=" -javaagent:/usr/local/bin/aws-opentelemetry-agent.jar"
+else
+  echo "OTEL disabled..."
+  TRACE_PARAMS=""
+fi
+
 export HOME="/home/oph"
 export LOGS="${HOME}/logs"
 
@@ -105,6 +113,7 @@ JAVA_OPTS="$JAVA_OPTS\
   -Dcom.sun.management.jmxremote.local.only=false\
   -Djava.rmi.server.hostname=localhost\
   -javaagent:/usr/local/bin/jmx_prometheus_javaagent.jar=1134:/etc/prometheus.yaml\
+  ${TRACE_PARAMS}\
   -Xloggc:${LOGS}/${NAME}_gc.log\
   -XX:+PrintGCDetails\
   -XX:+PrintGCTimeStamps\

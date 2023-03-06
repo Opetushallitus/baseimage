@@ -19,7 +19,6 @@ yum update -y && yum install -y \
   openssh-server \
   openssl \
   python3 \
-  python3-pip \
   python3-jinja2 \
   unzip \
   wget \
@@ -34,8 +33,8 @@ yum update -y && yum install -y \
   tzdata && yum clean all && rm -rf /var/cache/yum
 
 echo "Installing tools for downloading environment configuration during service run script"
-pip3 install --upgrade pip
-pip3 install \
+python -m ensurepip --upgrade
+python -m pip install \
   awscli \
   docker-py \
   j2cli \
@@ -75,6 +74,11 @@ tar -xvzf node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
 rm node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
 mv node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}/node_exporter /usr/local/bin/
 rm -rf node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}
+
+echo "Installing Otel agent"
+OTEL_VERSION="1.21.1"
+wget -q https://github.com/aws-observability/aws-otel-java-instrumentation/releases/download/v${OTEL_VERSION}/aws-opentelemetry-agent.jar
+mv aws-opentelemetry-agent.jar /usr/local/bin/
 
 echo "Init Prometheus config file"
 echo "{}" > /etc/prometheus.yaml
