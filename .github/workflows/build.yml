@@ -51,11 +51,11 @@ jobs:
         shell: bash
         continue-on-error: true
         run: |
-          docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} --build-arg FOLDER=${{ env.FOLDER }} -t test-alpine .
+          docker build --build-arg SERVICE_KIND=${{ matrix.servicekind }} --build-arg OPENJDK_VERSION=${{ matrix.jdk }} --build-arg TOMCAT_VERSION=${{ matrix.tomcat }} --build-arg FOLDER=${{ env.FOLDER }} -t test-alpine .
           docker run -u root -v $(pwd)/variants/${{ env.FOLDER }}:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
           ALPINE=$(git diff --shortstat $(pwd)/variants/${{ env.FOLDER }}/package-versions)
 
-          docker build --build-arg SERVICE_KIND=${servicekind} --build-arg OPENJDK_VERSION=${jdk} --build-arg TOMCAT_VERSION=${tomcat} --build-arg FOLDER=${{ env.FOLDER }}-corretto -t test-azlinux2 -f Dockerfile.corretto .
+          docker build --build-arg SERVICE_KIND=${{ matrix.servicekind }} --build-arg OPENJDK_VERSION=${{ matrix.jdk }} --build-arg TOMCAT_VERSION=${{ matrix.tomcat }} --build-arg FOLDER=${{ env.FOLDER }}-corretto -t test-azlinux2 -f Dockerfile.corretto .
           docker run -u root -v $(pwd)/variants/${{ env.FOLDER }}-corretto:/repository test-azlinux2 /bin/sh -c "rpm -qa | sort > /repository/package-versions && chmod 755 /repository/package-versions"
           AZ2=$(git diff --shortstat $(pwd)/variants/${{ env.FOLDER }}-corretto/package-versions)
 
@@ -145,6 +145,7 @@ jobs:
         with:
           context: .
           push: true
+          platforms: linux/amd64
           tags: ${{ steps.meta-alpine.outputs.tags }}
           labels: ${{ steps.meta-alpine.outputs.labels }}
           build-args: |
@@ -152,33 +153,6 @@ jobs:
             OPENJDK_VERSION=${{ matrix.jdk }}
             TOMCAT_VERSION=${{ matrix.tomcat }}
             FOLDER=${{ env.FOLDER }}
-      
-      # These steps should be used with multiarchitecture image
-      # - name: Push tags to amd64 child image
-      #   uses: docker/build-push-action@v4
-      #   with:
-      #     context: .
-      #     push: true
-      #     platforms: linux/amd64
-      #     tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ env.IMAGE_LABEL }}-amd64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ github.ref_name }}-amd64
-      #     labels: ${{ steps.meta-alpine.outputs.labels }}
-      #     build-args: |
-      #       SERVICE_KIND=${{ matrix.servicekind }}
-      #       OPENJDK_VERSION=${{ matrix.jdk }}
-      #       TOMCAT_VERSION=${{ matrix.tomcat }}
-
-      # - name: Push tags to arm64 child image
-      #   uses: docker/build-push-action@v4
-      #   with:
-      #     context: .
-      #     push: true
-      #     platforms: linux/arm64
-      #     tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ env.IMAGE_LABEL }}-arm64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ github.ref_name }}-arm64
-      #     labels: ${{ steps.meta-alpine.outputs.labels }}
-      #     build-args: |
-      #       SERVICE_KIND=${{ matrix.servicekind }}
-      #       OPENJDK_VERSION=${{ matrix.jdk }}
-      #       TOMCAT_VERSION=${{ matrix.tomcat }}
       
       - name: Update build metadata
         shell: bash
@@ -207,36 +181,6 @@ jobs:
           push: true
           platforms: linux/amd64, linux/arm64
           tags: ${{ steps.meta-corretto.outputs.tags }}
-          labels: ${{ steps.meta-corretto.outputs.labels }}
-          build-args: |
-            SERVICE_KIND=${{ matrix.servicekind }}
-            OPENJDK_VERSION=${{ matrix.jdk }}
-            TOMCAT_VERSION=${{ matrix.tomcat }}
-            FOLDER=${{ env.FOLDER }}-corretto
-      
-      - name: Push tags to amd64 child image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile.corretto
-          push: true
-          platforms: linux/amd64
-          tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto:${{ env.IMAGE_LABEL }}-amd64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto:${{ github.ref_name }}-amd64
-          labels: ${{ steps.meta-corretto.outputs.labels }}
-          build-args: |
-            SERVICE_KIND=${{ matrix.servicekind }}
-            OPENJDK_VERSION=${{ matrix.jdk }}
-            TOMCAT_VERSION=${{ matrix.tomcat }}
-            FOLDER=${{ env.FOLDER }}-corretto
-
-      - name: Push tags to arm64 child image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          file: ./Dockerfile.corretto
-          platforms: linux/arm64
-          tags: ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto:${{ env.IMAGE_LABEL }}-arm64,${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto:${{ github.ref_name }}-arm64
           labels: ${{ steps.meta-corretto.outputs.labels }}
           build-args: |
             SERVICE_KIND=${{ matrix.servicekind }}
