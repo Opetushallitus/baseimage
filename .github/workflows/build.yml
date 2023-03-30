@@ -12,17 +12,17 @@ env:
   ECR_REPO: 190073735177.dkr.ecr.eu-west-1.amazonaws.com/utility
 
 permissions:
-  id-token: write   # This is required for requesting the JWT
-  contents: write    # This is required for actions/checkout read/write
+  id-token: write   # Required for requesting the AWS JWT
+  contents: write    # Required for actions/checkout read/write
+  security-events: write # Required for trivy results
 
 jobs:
 
   update-packages:
     if: ${{ github.event_name == 'schedule' }}
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
-      fail-fast: true
+      max-parallel: 1
       matrix:
         jdk: [8, 11, 17]
         servicekind: [fatjar, war]
@@ -75,13 +75,14 @@ jobs:
   build:
     if: ${{ github.event_name != 'schedule' }}
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
-      fail-fast: true
       matrix:
-        jdk: [8, 11, 17]
-        servicekind: [fatjar, war]
-        tomcat: [tomcat7, tomcat8]
+        jdk: [8]
+        servicekind: [fatjar]
+        tomcat: [tomcat7]
+        #jdk: [8, 11, 17]
+        #servicekind: [fatjar, war]
+        #tomcat: [tomcat7, tomcat8]
         exclude:
           - jdk: 17
             servicekind: war
@@ -89,7 +90,6 @@ jobs:
             tomcat: tomcat8
 
     steps:
-      - uses: actions/checkout@v3
 
       - name: Set up variables
         shell: bash
@@ -102,7 +102,7 @@ jobs:
           else
             echo "FOLDER=${{ matrix.servicekind }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
           fi
-
+      - uses: actions/checkout@v3
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -140,7 +140,7 @@ jobs:
         with:
           registry: ${{ steps.ecr-login.outputs.registry }}
 
-      - name: Build and export to Docker
+      - name: Build image
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -154,6 +154,19 @@ jobs:
             TOMCAT_VERSION=${{ matrix.tomcat }}
             FOLDER=${{ env.FOLDER }}
       
+      - name: Run vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}:${{ env.IMAGE_LABEL }}'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+          
       - name: Update build metadata
         shell: bash
         run: |
@@ -180,8 +193,8 @@ jobs:
           file: ./Dockerfile.corretto
           push: true
           platforms: linux/amd64, linux/arm64
-          tags: ${{ steps.meta-corretto.outputs.tags }}
-          labels: ${{ steps.meta-corretto.outputs.labels }}
+          tags: ${{ steps.meta-alpine.outputs.tags }}
+          labels: ${{ steps.meta-alpine.outputs.labels }}
           build-args: |
             SERVICE_KIND=${{ matrix.servicekind }}
             OPENJDK_VERSION=${{ matrix.jdk }}
