@@ -14,8 +14,8 @@ cracklib-dicts-2.9.0-11.amzn2.0.2.x86_64
 cryptsetup-libs-1.7.4-4.amzn2.x86_64
 curl-7.88.1-1.amzn2.0.1.x86_64
 cyrus-sasl-lib-2.1.26-24.amzn2.x86_64
-dbus-1.10.24-7.amzn2.0.2.x86_64
-dbus-libs-1.10.24-7.amzn2.0.2.x86_64
+dbus-1.10.24-7.amzn2.0.3.x86_64
+dbus-libs-1.10.24-7.amzn2.0.3.x86_64
 dejavu-fonts-common-2.33-6.amzn2.noarch
 dejavu-sans-fonts-2.33-6.amzn2.noarch
 device-mapper-1.02.170-6.amzn2.5.x86_64
@@ -125,7 +125,7 @@ pth-2.0.7-23.amzn2.0.2.x86_64
 pygpgme-0.3-9.amzn2.0.3.x86_64
 pyliblzma-0.5.3-25.amzn2.x86_64
 python-2.7.18-1.amzn2.0.6.x86_64
-python-babel-0.9.6-8.amzn2.0.1.noarch
+python-babel-0.9.6-8.amzn2.0.2.noarch
 python-iniparse-0.4-9.amzn2.noarch
 python-libs-2.7.18-1.amzn2.0.6.x86_64
 python-markupsafe-0.11-10.amzn2.0.2.x86_64
@@ -150,8 +150,8 @@ shadow-utils-4.1.5.1-24.amzn2.0.2.x86_64
 shared-mime-info-1.8-4.amzn2.x86_64
 sqlite-3.7.17-8.amzn2.1.2.x86_64
 system-release-2-14.amzn2.x86_64
-systemd-219-78.amzn2.0.21.x86_64
-systemd-libs-219-78.amzn2.0.21.x86_64
+systemd-219-78.amzn2.0.22.x86_64
+systemd-libs-219-78.amzn2.0.22.x86_64
 tar-1.26-35.amzn2.0.1.x86_64
 tcp_wrappers-libs-7.6-77.amzn2.0.2.x86_64
 trousers-0.3.14-2.amzn2.0.2.x86_64
@@ -159,8 +159,8 @@ tzdata-2022g-1.amzn2.0.2.noarch
 unzip-6.0-57.amzn2.0.1.x86_64
 ustr-1.0.4-16.amzn2.0.3.x86_64
 util-linux-2.30.2-2.amzn2.0.11.x86_64
-vim-data-9.0.1367-1.amzn2.0.1.noarch
-vim-minimal-9.0.1367-1.amzn2.0.1.x86_64
+vim-data-9.0.1403-1.amzn2.0.1.noarch
+vim-minimal-9.0.1403-1.amzn2.0.1.x86_64
 wget-1.14-18.amzn2.1.x86_64
 xz-libs-5.2.2-1.amzn2.0.3.x86_64
 yum-3.4.3-158.amzn2.0.6.noarch
