@@ -1,11 +1,21 @@
 ARG OPENJDK_VERSION
-FROM amazoncorretto:${OPENJDK_VERSION}-alpine
+FROM alpine:3.17
 
 # need to repeat the argument declaration after FROM for it to be back in scope
 ARG OPENJDK_VERSION
 ARG SERVICE_KIND
 ARG TOMCAT_VERSION
 ARG FOLDER
+
+RUN wget -O /etc/apk/keys/amazoncorretto.rsa.pub  https://apk.corretto.aws/amazoncorretto.rsa.pub && \
+    echo "https://apk.corretto.aws/" >> /etc/apk/repositories && \
+    apk update && \
+    apk add --no-cache amazon-corretto-${OPENJDK_VERSION}
+
+ENV LANG C.UTF-8
+
+ENV JAVA_HOME=/usr/lib/jvm/default-jvm
+ENV PATH=$PATH:/usr/lib/jvm/default-jvm/bin
 
 RUN addgroup -S oph -g 1001 && adduser -u 1001 -D -G oph oph
 
