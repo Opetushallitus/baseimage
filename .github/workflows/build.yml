@@ -53,13 +53,8 @@ jobs:
         run: |
           docker build --build-arg SERVICE_KIND=${{ matrix.servicekind }} --build-arg OPENJDK_VERSION=${{ matrix.jdk }} --build-arg TOMCAT_VERSION=${{ matrix.tomcat }} --build-arg FOLDER=${{ env.FOLDER }} -t test-alpine .
           docker run -u root -v $(pwd)/variants/${{ env.FOLDER }}:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
-          ALPINE=$(git diff --shortstat $(pwd)/variants/${{ env.FOLDER }}/package-versions)
 
-          docker build --build-arg SERVICE_KIND=${{ matrix.servicekind }} --build-arg OPENJDK_VERSION=${{ matrix.jdk }} --build-arg TOMCAT_VERSION=${{ matrix.tomcat }} --build-arg FOLDER=${{ env.FOLDER }}-corretto -t test-azlinux2 -f Dockerfile.corretto .
-          docker run -u root -v $(pwd)/variants/${{ env.FOLDER }}-corretto:/repository test-azlinux2 /bin/sh -c "rpm -qa | sort > /repository/package-versions && chmod 755 /repository/package-versions"
-          AZ2=$(git diff --shortstat $(pwd)/variants/${{ env.FOLDER }}-corretto/package-versions)
-
-          if [ -n "$ALPINE" ] || [ -n "$AZ2" ]; then
+          if [ -n $(git diff --shortstat $(pwd)/variants/${{ env.FOLDER }}/package-versions) ]; then
             echo "Updating packages"
             git config --global user.name "Github Actions"
             git config --global user.email "github-actions@opintopolku.fi"
@@ -115,7 +110,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Docker meta for alpine images
-        id: meta-alpine
+        id: meta
         uses: docker/metadata-action@v4
         with:
           images: |
@@ -145,9 +140,9 @@ jobs:
         with:
           context: .
           push: true
-          platforms: linux/amd64
-          tags: ${{ steps.meta-alpine.outputs.tags }}
-          labels: ${{ steps.meta-alpine.outputs.labels }}
+          platforms: linux/amd64, linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             SERVICE_KIND=${{ matrix.servicekind }}
             OPENJDK_VERSION=${{ matrix.jdk }}
@@ -159,36 +154,3 @@ jobs:
         run: |
           aws dynamodb put-item --table-name builds --item "{\"Service\": {\"S\": \"$FOLDER\"}, \"Build\": {\"S\": \"$IMAGE_LABEL\"}, \"Branch\": {\"S\": \"$github.ref_name\"}, \"Commit\": {\"S\": \"$github.sha\"}, \"Time\": {\"S\": \"$BUILD_TIME\"}}" --condition-expression "attribute_not_exists(Id)" --region eu-west-1
 
-      - name: Docker meta for corretto images
-        id: meta-corretto
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ${{ env.ECR_REPO }}/baseimage-${{ env.FOLDER }}-corretto
-          tags: |
-            type=raw,value=${{ env.IMAGE_LABEL }}
-            type=raw,value=${{ github.ref_name }}
-          labels: |
-            BaseimageType=${{ matrix.servicekind }}-openjdk${{ matrix.jdk }}
-            BaseimageBuildNumber=${{ env.IMAGE_LABEL }}
-            BaseimageBuildTime=${{ env.BUILD_TIME }}
-
-      - name: Build and export to Docker
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile.corretto
-          push: true
-          platforms: linux/amd64, linux/arm64
-          tags: ${{ steps.meta-corretto.outputs.tags }}
-          labels: ${{ steps.meta-corretto.outputs.labels }}
-          build-args: |
-            SERVICE_KIND=${{ matrix.servicekind }}
-            OPENJDK_VERSION=${{ matrix.jdk }}
-            TOMCAT_VERSION=${{ matrix.tomcat }}
-            FOLDER=${{ env.FOLDER }}-corretto
-      
-      - name: Update build metadata
-        shell: bash
-        run: |
-          aws dynamodb put-item --table-name builds --item "{\"Service\": {\"S\": \"$FOLDER-corretto\"}, \"Build\": {\"S\": \"$IMAGE_LABEL\"}, \"Branch\": {\"S\": \"$github.ref_name\"}, \"Commit\": {\"S\": \"$github.sha\"}, \"Time\": {\"S\": \"$BUILD_TIME\"}}" --condition-expression "attribute_not_exists(Id)" --region eu-west-1

@@ -29,7 +29,8 @@ apk --no-cache add \
   musl-locales \
   musl-locales-lang \
   tzdata \
-  freetype
+  freetype \
+  tomcat-native
 
 ln -sf /usr/bin/python3 /usr/bin/python
 
@@ -87,10 +88,10 @@ echo "Init Prometheus config file"
 echo "{}" > /etc/prometheus.yaml
 
 echo "Installing Tomcat"
-TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.88/bin"
-TOMCAT_PACKAGE="apache-tomcat-7.0.88.tar.gz"
+TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.99/bin"
+TOMCAT_PACKAGE="apache-tomcat-7.0.99.tar.gz"
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}
-echo "675abed4e71e95793f549a2077d891e28f2f8e3427aca180d2ff6607be8885be  /tmp/${TOMCAT_PACKAGE}" |sha256sum -c
+echo "2485f0d74fc1ce8ffa83a6d1e52125dae9341fbb36c31f03c94fdb15625a4725  /tmp/${TOMCAT_PACKAGE}" |sha256sum -c
 mkdir -p /opt/tomcat
 tar xf /tmp/${TOMCAT_PACKAGE} -C /opt/tomcat --strip-components=1
 rm -rf /opt/tomcat/webapps/*
