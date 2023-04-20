@@ -95,7 +95,7 @@ if [ `ls -l ${CATALINA_BASE}/webapps/ | wc -l` -ne 1 ]; then
     echo "Creating setenv.sh..."
     cat > ${CATALINA_BASE}/bin/setenv.sh <<- SETENV
 #!/bin/sh
-JAVA_OPTS="$JAVA_OPTS\
+export JAVA_OPTS="$JAVA_OPTS\
   ${SECRET_JAVA_OPTS}\
   -Duser.home=/home/oph\
   -Djavax.net.ssl.trustStore=${HOME}/cacerts\

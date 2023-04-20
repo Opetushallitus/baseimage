@@ -95,30 +95,30 @@ if [ `ls -l ${CATALINA_BASE}/webapps/ | wc -l` -ne 1 ]; then
     echo "Creating setenv.sh..."
     cat > ${CATALINA_BASE}/bin/setenv.sh <<- SETENV
 #!/bin/sh
-JAVA_OPTS="$JAVA_OPTS
-  ${SECRET_JAVA_OPTS}
-  -Duser.home=/home/oph
-  -Djavax.net.ssl.trustStore=${HOME}/cacerts
-  -Djava.util.logging.config.file=${LOGPATH}/logging.properties
-  -Djuli-logback.configurationFile=file://${LOGPATH}/logback-tomcat.xml
-  -DHOSTNAME=`hostname`
-  -Djava.net.preferIPv4Stack=true
-  -Dfile.encoding=UTF-8
-  -Djava.security.egd=file:/dev/urandom
-  -Dcom.sun.management.jmxremote
-  -Dcom.sun.management.jmxremote.authenticate=false
-  -Dcom.sun.management.jmxremote.ssl=false
-  -Dcom.sun.management.jmxremote.port=${JMX_PORT}
-  -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT}
-  -Dcom.sun.management.jmxremote.local.only=false
-  -Djava.rmi.server.hostname=localhost
-  -javaagent:/usr/local/bin/jmx_prometheus_javaagent.jar=1134:/etc/prometheus.yaml
-  ${TRACE_PARAMS}
-  -Xlog:gc*:file=${LOGS}/${NAME}_gc.log:uptime:filecount=10,filesize=10m
-  -XX:+HeapDumpOnOutOfMemoryError
-  -XX:HeapDumpPath=/home/oph/dumps/tomcat_heap_dump-`date +%Y-%m-%d-%H-%M-%S`.hprof
-  -XX:ErrorFile=/home/oph/logs/tomcat_hs_err.log
-  ${DEBUG_PARAMS}
+export JAVA_OPTS="$JAVA_OPTS\
+  ${SECRET_JAVA_OPTS}\
+  -Duser.home=/home/oph\
+  -Djavax.net.ssl.trustStore=${HOME}/cacerts\
+  -Djava.util.logging.config.file=${LOGPATH}/logging.properties\
+  -Djuli-logback.configurationFile=file://${LOGPATH}/logback-tomcat.xml\
+  -DHOSTNAME=`hostname`\
+  -Djava.net.preferIPv4Stack=true\
+  -Dfile.encoding=UTF-8\
+  -Djava.security.egd=file:/dev/urandom\
+  -Dcom.sun.management.jmxremote\
+  -Dcom.sun.management.jmxremote.authenticate=false\
+  -Dcom.sun.management.jmxremote.ssl=false\
+  -Dcom.sun.management.jmxremote.port=${JMX_PORT}\
+  -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT}\
+  -Dcom.sun.management.jmxremote.local.only=false\
+  -Djava.rmi.server.hostname=localhost\
+  -javaagent:/usr/local/bin/jmx_prometheus_javaagent.jar=1134:/etc/prometheus.yaml\
+  ${TRACE_PARAMS}\
+  -Xlog:gc*:file=${LOGS}/${NAME}_gc.log:uptime:filecount=10,filesize=10m\
+  -XX:+HeapDumpOnOutOfMemoryError\
+  -XX:HeapDumpPath=/home/oph/dumps/tomcat_heap_dump-`date +%Y-%m-%d-%H-%M-%S`.hprof\
+  -XX:ErrorFile=/home/oph/logs/tomcat_hs_err.log\
+  ${DEBUG_PARAMS}\
 "
 SETENV
     case ${NAME} in
