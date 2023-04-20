@@ -197,6 +197,7 @@ SERVERXML
     fi
 
     echo "Starting application..."
+    cat ${CATALINA_BASE}/bin/setenv.sh
     exec ${CATALINA_HOME}/bin/catalina.sh run
 else
   echo "Fatal error: No war found, exiting!"

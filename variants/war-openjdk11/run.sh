@@ -113,7 +113,7 @@ JAVA_OPTS="$JAVA_OPTS
   -Dcom.sun.management.jmxremote.local.only=false
   -Djava.rmi.server.hostname=localhost
   -javaagent:/usr/local/bin/jmx_prometheus_javaagent.jar=1134:/etc/prometheus.yaml
-  ${TRACE_PARAMS} 
+  ${TRACE_PARAMS}
   -Xlog:gc*:file=${LOGS}/${NAME}_gc.log:uptime:filecount=10,filesize=10m
   -XX:+HeapDumpOnOutOfMemoryError
   -XX:HeapDumpPath=/home/oph/dumps/tomcat_heap_dump-`date +%Y-%m-%d-%H-%M-%S`.hprof
@@ -200,6 +200,7 @@ SERVERXML
     fi
 
     echo "Starting application..."
+    cat ${CATALINA_BASE}/bin/setenv.sh
     exec ${CATALINA_HOME}/bin/catalina.sh run
 else
   echo "Fatal error: No war found, exiting!"

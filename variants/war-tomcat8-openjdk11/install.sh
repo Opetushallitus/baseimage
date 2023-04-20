@@ -29,8 +29,7 @@ apk --no-cache add \
   musl-locales \
   musl-locales-lang \
   tzdata \
-  freetype \
-  tomcat-native
+  freetype
 
 ln -sf /usr/bin/python3 /usr/bin/python
 

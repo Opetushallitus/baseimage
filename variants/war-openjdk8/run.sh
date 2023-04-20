@@ -113,7 +113,7 @@ JAVA_OPTS="$JAVA_OPTS
   -Dcom.sun.management.jmxremote.local.only=false
   -Djava.rmi.server.hostname=localhost
   -javaagent:/usr/local/bin/jmx_prometheus_javaagent.jar=1134:/etc/prometheus.yaml
-  ${TRACE_PARAMS} 
+  ${TRACE_PARAMS}
   -Xloggc:${LOGS}/${NAME}_gc.log
   -XX:+PrintGCDetails
   -XX:+PrintGCTimeStamps
@@ -205,6 +205,7 @@ SERVERXML
     fi
 
     echo "Starting application..."
+    cat ${CATALINA_BASE}/bin/setenv.sh
     exec ${CATALINA_HOME}/bin/catalina.sh run
 else
   echo "Fatal error: No war found, exiting!"
