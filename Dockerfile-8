@@ -7,6 +7,8 @@ ARG SERVICE_KIND
 ARG TOMCAT_VERSION
 ARG FOLDER
 
+ENV JRE_HOME="${JAVA_HOME}"
+
 RUN addgroup -S oph -g 1001 && adduser -u 1001 -D -G oph oph
 
 COPY common/dump_threads.sh /usr/local/bin/

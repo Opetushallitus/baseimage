@@ -21,6 +21,7 @@ ARG TOMCAT_VERSION
 ARG FOLDER
 
 ENV JAVA_HOME="/usr/lib/jvm/java-${OPENJDK_VERSION}-corretto"
+ENV JRE_HOME="/usr/lib/jvm/java-${OPENJDK_VERSION}-corretto"
 ENV PATH="${PATH}:/usr/lib/jvm/java-${OPENJDK_VERSION}-corretto/bin"
 
 COPY --from=corretto-jdk /customjre $JAVA_HOME
