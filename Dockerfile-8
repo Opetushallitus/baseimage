@@ -8,6 +8,7 @@ ARG TOMCAT_VERSION
 ARG FOLDER
 
 ENV JRE_HOME="${JAVA_HOME}"
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 RUN addgroup -S oph -g 1001 && adduser -u 1001 -D -G oph oph
 
