@@ -20,9 +20,7 @@ jobs:
   update-packages:
     if: ${{ github.event_name == 'schedule' }}
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
-      fail-fast: true
       matrix:
         jdk: [8, 11, 17]
         servicekind: [fatjar, war]
@@ -46,12 +44,18 @@ jobs:
           else
             echo "FOLDER=${{ matrix.servicekind }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
           fi
+          if [ "${{ matrix.jdk }}" = "8" ]
+          then
+            echo "DOCKERFILE=Dockerfile-8" >> $GITHUB_ENV
+          else
+            echo "DOCKERFILE=Dockerfile" >> $GITHUB_ENV
+          fi
       - uses: actions/checkout@v3
       - name: Build image and check packages
         shell: bash
         continue-on-error: true
         run: |
-          docker build --build-arg SERVICE_KIND=${{ matrix.servicekind }} --build-arg OPENJDK_VERSION=${{ matrix.jdk }} --build-arg TOMCAT_VERSION=${{ matrix.tomcat }} --build-arg FOLDER=${{ env.FOLDER }} -t test-alpine .
+          docker build --build-arg SERVICE_KIND=${{ matrix.servicekind }} --build-arg OPENJDK_VERSION=${{ matrix.jdk }} --build-arg TOMCAT_VERSION=${{ matrix.tomcat }} --build-arg FOLDER=${{ env.FOLDER }} -f ${{ env.DOCKERFILE }} -t test-alpine .
           docker run -u root -v $(pwd)/variants/${{ env.FOLDER }}:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
 
           if [ -n $(git diff --shortstat $(pwd)/variants/${{ env.FOLDER }}/package-versions) ]; then
@@ -97,6 +101,12 @@ jobs:
           else
             echo "FOLDER=${{ matrix.servicekind }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
           fi
+          if [ "${{ matrix.jdk }}" = "8" ]
+          then
+            echo "DOCKERFILE=Dockerfile-8" >> $GITHUB_ENV
+          else
+            echo "DOCKERFILE=Dockerfile" >> $GITHUB_ENV
+          fi
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -139,6 +149,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
+          file: ${{ env.DOCKERFILE }}
           push: true
           platforms: linux/amd64, linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
