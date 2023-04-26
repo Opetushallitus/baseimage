@@ -63,6 +63,7 @@ cp ${CONFIGPATH}/log/logback-access.xml ${CATALINA_BASE}/conf/
 echo "Copying war file to CATALINA_BASE/webapps"
 ln -s /opt/tomcat/webapps/* ${CATALINA_BASE}/webapps/
 cp -vr /opt/tomcat/conf/* ${CATALINA_BASE}/conf/
+cp -v ${CATALINA_HOME}/bin/tomcat-juli.jar ${CATALINA_BASE}/bin/
 
 
 echo "Starting Prometheus node_exporter..."
