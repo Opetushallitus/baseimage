@@ -181,9 +181,6 @@ SETENV
     <Connector port="8080" protocol="org.apache.coyote.http11.Http11NioProtocol" connectionTimeout="20000" secure="true" scheme="https"
                SSLEnabled="false" proxyPort="443" maxThreads="50" asyncTimeout="150000" URIEncoding="UTF-8"/>
 
-    <!-- Define an AJP 1.3 Connector on port 8009 -->
-    <Connector port="8009" protocol="AJP/1.3" maxThreads="1000" />
-
     <Engine name="Catalina" defaultHost="localhost">
 
       <Host name="localhost"  appBase="webapps" unpackWARs="true" autoDeploy="true">
