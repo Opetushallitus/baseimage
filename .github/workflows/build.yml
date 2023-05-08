@@ -163,5 +163,5 @@ jobs:
       - name: Update build metadata
         shell: bash
         run: |
-          aws dynamodb put-item --table-name builds --item "{\"Service\": {\"S\": \"$FOLDER\"}, \"Build\": {\"S\": \"$IMAGE_LABEL\"}, \"Branch\": {\"S\": \"$github.ref_name\"}, \"Commit\": {\"S\": \"$github.sha\"}, \"Time\": {\"S\": \"$BUILD_TIME\"}}" --condition-expression "attribute_not_exists(Id)" --region eu-west-1
+          aws dynamodb put-item --table-name builds --item "{\"Service\": {\"S\": \"$FOLDER\"}, \"Build\": {\"S\": \"$IMAGE_LABEL\"}, \"Branch\": {\"S\": \"$GITHUB_REF_NAME\"}, \"Commit\": {\"S\": \"$GITHUB_SHA\"}, \"Time\": {\"S\": \"$BUILD_TIME\"}}" --condition-expression "attribute_not_exists(Id)" --region eu-west-1
 
