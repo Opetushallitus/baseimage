@@ -118,6 +118,8 @@ if [ -f "${STANDALONE_JAR}" ]; then
         JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${HOME}/oph-configuration/logback.xml"
     elif [ ${NAME} == "oti" ]; then
         JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${HOME}/oph-configuration/logback.xml"
+    elif [ ${NAME} == "yki" ]; then
+        JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${HOME}/oph-configuration/logback.xml"
     else
         # at least hakuperusteet seems to need this
         JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${LOGPATH}/logback-standalone.xml"
