@@ -67,18 +67,18 @@ sed -i 's/#*networkaddress.cache.ttl=.*/networkaddress.cache.ttl=30/g' $TMP_SECU
 mv $TMP_SECURITY_FILE $JAVA_SECURITY_FILE
 
 echo "Installing Prometheus jmx_exporter"
-JMX_EXPORTER_VERSION="0.17.2"
+JMX_EXPORTER_VERSION="0.18.0"
 wget -q https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VERSION}/jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar
 mv jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar jmx_prometheus_javaagent.jar
-echo "614e3c13696f1df9f87640a67c80dc3d5a7f9619  jmx_prometheus_javaagent.jar" |sha1sum -c
+echo "889ad8ac7b516a751b50a2a7ce82f611d34f8376  jmx_prometheus_javaagent.jar" |sha1sum -c
 mv jmx_prometheus_javaagent.jar /usr/local/bin/
 
 echo "Installing Prometheus node_exporter"
-NODE_EXPORTER_VERSION="1.5.0"
+NODE_EXPORTER_VERSION="1.6.0"
 wget -q https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
 case "$ARCHITECTURE" in
-  arm64) echo "e031a539af9a619c06774788b54c23fccc2a852d41437315725a086ccdb0ed16  node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz" |sha256sum -c ;;
-  amd64) echo "af999fd31ab54ed3a34b9f0b10c28e9acee9ef5ac5a5d5edfdde85437db7acbb  node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz" |sha256sum -c ;;
+  arm64) echo "eb2f24626eca824c077cc7675d762bd520161c5c1a3f33c57b4b8aa0d452d613  node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz" |sha256sum -c ;;
+  amd64) echo "0b3573f8a7cb5b5f587df68eb28c3eb7c463f57d4b93e62c7586cb6dc481e515  node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz" |sha256sum -c ;;
   *) echo "Unknown architecture" && exit 1
 esac
 tar -xvzf node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
@@ -87,7 +87,7 @@ mv node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}/node_exporter /u
 rm -rf node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}
 
 echo "Installing Otel agent"
-OTEL_VERSION="1.21.1"
+OTEL_VERSION="1.27.0"
 wget -q https://github.com/aws-observability/aws-otel-java-instrumentation/releases/download/v${OTEL_VERSION}/aws-opentelemetry-agent.jar
 mv aws-opentelemetry-agent.jar /usr/local/bin/
 
