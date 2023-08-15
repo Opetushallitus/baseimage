@@ -124,7 +124,7 @@ export JAVA_OPTS="$JAVA_OPTS\
   -XX:+HeapDumpOnOutOfMemoryError\
   -XX:HeapDumpPath=/home/oph/dumps/tomcat_heap_dump-`date +%Y-%m-%d-%H-%M-%S`.hprof\
   -XX:ErrorFile=/home/oph/logs/tomcat_hs_err.log\
-  ${DEBUG_PARAMS}
+  ${DEBUG_PARAMS}\
 "
 SETENV
     case ${NAME} in
