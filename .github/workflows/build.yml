@@ -80,7 +80,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        jdk: [8, 11, 17]
+        jdk: [8, 11, 17, 21]
         servicekind: [fatjar, war]
         tomcat: [tomcat7, tomcat8]
         exclude:

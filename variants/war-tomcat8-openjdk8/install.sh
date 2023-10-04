@@ -91,7 +91,7 @@ TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.93/bin"
 TOMCAT_PACKAGE="apache-tomcat-8.5.93.tar.gz"
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}.sha512
-sha512sum -c /tmp/${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}.sha512
+sha512sum -c /tmp/${TOMCAT_PACKAGE}.sha512
 mkdir -p /opt/tomcat
 tar xf /tmp/${TOMCAT_PACKAGE} -C /opt/tomcat --strip-components=1
 rm -rf /opt/tomcat/webapps/*
