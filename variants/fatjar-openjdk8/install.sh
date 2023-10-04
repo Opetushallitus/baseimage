@@ -87,7 +87,7 @@ mv node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}/node_exporter /u
 rm -rf node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}
 
 echo "Installing Otel agent"
-OTEL_VERSION="1.28.0"
+OTEL_VERSION="1.30.0"
 wget -q https://github.com/aws-observability/aws-otel-java-instrumentation/releases/download/v${OTEL_VERSION}/aws-opentelemetry-agent.jar
 mv aws-opentelemetry-agent.jar /usr/local/bin/
 
