@@ -91,7 +91,7 @@ TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.109/bin"
 TOMCAT_PACKAGE="apache-tomcat-7.0.109.tar.gz"
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}.sha512
-sha512sum -c /tmp/${TOMCAT_PACKAGE}.sha512
+cd /tmp && sha512sum -c ${TOMCAT_PACKAGE}.sha512
 mkdir -p /opt/tomcat
 tar xf /tmp/${TOMCAT_PACKAGE} -C /opt/tomcat --strip-components=1
 rm -rf /opt/tomcat/webapps/*
