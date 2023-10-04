@@ -90,7 +90,8 @@ echo "Installing Tomcat"
 TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.109/bin"
 TOMCAT_PACKAGE="apache-tomcat-7.0.109.tar.gz"
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}
-echo "ebfeb051e6da24bce583a4105439bfdafefdc7c5bdd642db2ab07e056211cb31  /tmp/${TOMCAT_PACKAGE}" |sha256sum -c
+wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}.sha512
+sha512sum -c /tmp/${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}.sha512
 mkdir -p /opt/tomcat
 tar xf /tmp/${TOMCAT_PACKAGE} -C /opt/tomcat --strip-components=1
 rm -rf /opt/tomcat/webapps/*
