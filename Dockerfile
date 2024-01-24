@@ -12,7 +12,7 @@ RUN $JAVA_HOME/bin/jlink \
          --compress=2 \
          --output /customjre
 
-FROM alpine:3.17
+FROM alpine:3.19
 
 # need to repeat the argument declaration after FROM for it to be back in scope
 ARG OPENJDK_VERSION
