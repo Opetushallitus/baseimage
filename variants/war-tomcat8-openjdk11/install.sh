@@ -19,6 +19,7 @@ apk --no-cache add \
   openssh \
   openssl \
   python3 \
+  py3-pip \
   py3-jinja2 \
   ttf-dejavu \
   unzip \
@@ -39,16 +40,17 @@ ln -s /usr/lib/libfontconfig.so.1 /usr/lib/libfontconfig.so && \
   ln -s /lib/libc.musl-$(uname -m).so.1 /usr/lib/libc.musl-$(uname -m).so.1
 
 echo "Installing tools for downloading environment configuration during service run script"
-python -m ensurepip --upgrade
-python -m pip install \
+
+pip install \
   awscli \
   docker-py \
   j2cli \
   jinja2 \
   jinja2-cli \
   pyasn1 \
-  six
-rm -rf /root/.cache
+  six \
+  --no-cache-dir \
+  --break-system-packages
 
 echo "Creating cache directories for package managers"
 mkdir /home/oph/.m2/

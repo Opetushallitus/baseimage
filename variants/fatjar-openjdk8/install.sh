@@ -20,6 +20,7 @@ apk --no-cache add \
   openssh \
   openssl \
   python3 \
+  py3-pip \
   py3-jinja2 \
   ttf-dejavu \
   unzip \
@@ -35,16 +36,18 @@ apk --no-cache add \
 ln -sf /usr/bin/python3 /usr/bin/python
 
 echo "Installing tools for downloading environment configuration during service run script"
-python -m ensurepip --upgrade
-python -m pip install \
+
+pip install \
   awscli \
   docker-py \
   j2cli \
   jinja2 \
   jinja2-cli \
   pyasn1 \
-  six
-rm -rf /root/.cache
+  six \
+  --break-system-packages \
+  --no-cache-dir
+
 
 echo "Creating cache directories for package managers"
 mkdir -p /home/oph/.m2/
