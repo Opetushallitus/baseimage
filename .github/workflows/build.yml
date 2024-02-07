@@ -46,7 +46,7 @@ jobs:
         run: |
           echo "IMAGE_LABEL=ga-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
           echo "BUILD_TIME=$(date --iso-8601=seconds)" >> $GITHUB_ENV
-          if [ "${{ matrix.tomcat }}" = "tomcat8" ]
+          if [ "${{ matrix.tomcat }}" = "tomcat8" ] || [ "${{ matrix.tomcat }}" = "tomcat9" ]
           then
             echo "FOLDER=${{ matrix.servicekind }}-${{ matrix.tomcat }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
           else
@@ -89,6 +89,10 @@ jobs:
         servicekind: [fatjar, war]
         tomcat: [tomcat7, tomcat8, tomcat9]
         exclude:
+          - jdk: 8
+            tomcat: tomcat9
+          - jdk: 11
+            tomcat: tomcat9
           - jdk: 17
             servicekind: war
           - jdk: 21
@@ -104,7 +108,7 @@ jobs:
         run: |
           echo "IMAGE_LABEL=ga-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
           echo "BUILD_TIME=$(date --iso-8601=seconds)" >> $GITHUB_ENV
-          if [ "${{ matrix.tomcat }}" = "tomcat8" ]
+          if [ "${{ matrix.tomcat }}" = "tomcat8" ] || [ "${{ matrix.tomcat }}" = "tomcat9" ]
           then
             echo "FOLDER=${{ matrix.servicekind }}-${{ matrix.tomcat }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
           else
