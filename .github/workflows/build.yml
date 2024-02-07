@@ -89,6 +89,10 @@ jobs:
         servicekind: [fatjar, war]
         tomcat: [tomcat7, tomcat8, tomcat9]
         exclude:
+          - servicekind: fatjar
+            tomcat: tomcat8
+          - servicekind: fatjar
+            tomcat: tomcat9
           - jdk: 8
             tomcat: tomcat9
           - jdk: 11
@@ -96,9 +100,9 @@ jobs:
           - jdk: 17
             servicekind: war
           - jdk: 21
-            tomcat: tomcat7, tomcat8
-          - servicekind: fatjar
-            tomcat: tomcat8, tomcat9
+            tomcat: tomcat7
+          - jdk: 21
+            tomcat: tomcat8
 
     steps:
       - uses: actions/checkout@v3
