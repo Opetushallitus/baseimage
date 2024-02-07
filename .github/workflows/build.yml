@@ -24,16 +24,22 @@ jobs:
       matrix:
         jdk: [8, 11, 17, 21]
         servicekind: [fatjar, war]
-        tomcat: [tomcat7, tomcat8]
+        tomcat: [tomcat7, tomcat8, tomcat9]
         exclude:
           - jdk: 17
             servicekind: war
           - jdk: 21
-            servicekind: war
+            tomcat: tomcat7, tomcat8
           - servicekind: fatjar
-            tomcat: tomcat8
+            tomcat: tomcat8, tomcat9
     env:
       PILVIKEHITYS_SLACK_TOKEN: ${{ secrets.PILVIKEHITYS_SLACK_TOKEN }}
+      LOCAL_TAG: localhost:5001/actions/
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5001:5000
     steps:
       - name: Set up variables
         shell: bash
@@ -55,7 +61,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build image and check packages
         shell: bash
-        continue-on-error: true
         run: |
           docker build --build-arg SERVICE_KIND=${{ matrix.servicekind }} --build-arg OPENJDK_VERSION=${{ matrix.jdk }} --build-arg TOMCAT_VERSION=${{ matrix.tomcat }} --build-arg FOLDER=${{ env.FOLDER }} -f ${{ env.DOCKERFILE }} -t test-alpine .
           docker run -u root -v $(pwd)/variants/${{ env.FOLDER }}:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
@@ -82,14 +87,14 @@ jobs:
       matrix:
         jdk: [8, 11, 17, 21]
         servicekind: [fatjar, war]
-        tomcat: [tomcat7, tomcat8]
+        tomcat: [tomcat7, tomcat8, tomcat9]
         exclude:
           - jdk: 17
             servicekind: war
           - jdk: 21
-            servicekind: war
+            tomcat: tomcat7, tomcat8
           - servicekind: fatjar
-            tomcat: tomcat8
+            tomcat: tomcat8, tomcat9
 
     steps:
       - uses: actions/checkout@v3
