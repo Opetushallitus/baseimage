@@ -158,7 +158,7 @@ jobs:
         id: buildx
       
       - name: Login to ECR
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ${{ steps.ecr-login.outputs.registry }}
 
