@@ -134,7 +134,7 @@ jobs:
 
       - name: Get ECR Registry
         id: ecr-login
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Docker meta for alpine images
         id: meta
