@@ -32,6 +32,9 @@ jobs:
             tomcat: tomcat7, tomcat8
           - servicekind: fatjar
             tomcat: tomcat8, tomcat9
+          - servicekind: war
+            tomcat: 8
+            jdk: 8
     env:
       PILVIKEHITYS_SLACK_TOKEN: ${{ secrets.PILVIKEHITYS_SLACK_TOKEN }}
       LOCAL_TAG: localhost:5001/actions/
