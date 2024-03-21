@@ -94,8 +94,6 @@ jobs:
             tomcat: tomcat10
           - jdk: 17
             servicekind: war
-          - jdk: 21
-            tomcat: tomcat10
           - jdk: 8
             tomcat: tomcat10
 
