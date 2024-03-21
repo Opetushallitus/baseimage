@@ -59,7 +59,7 @@ jobs:
           else
             echo "DOCKERFILE=Dockerfile" >> $GITHUB_ENV
           fi
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build image and check packages
         shell: bash
         run: |
@@ -98,7 +98,7 @@ jobs:
             tomcat: tomcat10
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up variables
         shell: bash
