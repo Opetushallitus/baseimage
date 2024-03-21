@@ -47,7 +47,7 @@ jobs:
         run: |
           echo "IMAGE_LABEL=ga-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
           echo "BUILD_TIME=$(date --iso-8601=seconds)" >> $GITHUB_ENV
-          if [ "${{ matrix.tomcat }}" = "tomcat9" ] || [ "${{ matrix.tomcat }}" = "tomcat10" ]
+          if [ ${{ matrix.servicekind == 'war' }} && ${{ matrix.tomcat == 'tomcat9' || matrix.tomcat == 'tomcat10' }} ]
           then
             echo "FOLDER=${{ matrix.servicekind }}-${{ matrix.tomcat }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
           else
@@ -96,6 +96,8 @@ jobs:
             servicekind: war
           - jdk: 21
             tomcat: tomcat10
+          - jdk: 8
+            tomcat: tomcat10
 
     steps:
       - uses: actions/checkout@v3
@@ -105,7 +107,7 @@ jobs:
         run: |
           echo "IMAGE_LABEL=ga-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
           echo "BUILD_TIME=$(date --iso-8601=seconds)" >> $GITHUB_ENV
-          if [ "${{ matrix.tomcat }}" = "tomcat9" ] || [ "${{ matrix.tomcat }}" = "tomcat10" ]
+          if [ ${{ matrix.servicekind == 'war' }} && ${{ matrix.tomcat == 'tomcat9' || matrix.tomcat == 'tomcat10' }} ]
           then
             echo "FOLDER=${{ matrix.servicekind }}-${{ matrix.tomcat }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
           else
