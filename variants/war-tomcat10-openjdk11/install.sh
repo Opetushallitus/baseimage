@@ -34,11 +34,6 @@ apk --no-cache add \
 
 ln -sf /usr/bin/python3 /usr/bin/python
 
-echo "Kludging font libraries in place"
-ln -s /usr/lib/libfontconfig.so.1 /usr/lib/libfontconfig.so && \
-  ln -s /lib/libuuid.so.1 /usr/lib/libuuid.so.1 && \
-  ln -s /lib/libc.musl-$(uname -m).so.1 /usr/lib/libc.musl-$(uname -m).so.1
-
 echo "Installing tools for downloading environment configuration during service run script"
 
 pip install \
@@ -49,8 +44,9 @@ pip install \
   jinja2-cli \
   pyasn1 \
   six \
-  --no-cache-dir \
-  --break-system-packages
+  --break-system-packages \
+  --no-cache-dir
+
 
 echo "Creating cache directories for package managers"
 mkdir /home/oph/.m2/
@@ -89,8 +85,8 @@ echo "Init Prometheus config file"
 echo "{}" > /etc/prometheus.yaml
 
 echo "Installing Tomcat"
-TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.93/bin"
-TOMCAT_PACKAGE="apache-tomcat-8.5.93.tar.gz"
+TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-10/v10.1.19/bin"
+TOMCAT_PACKAGE="apache-tomcat-10.1.19.tar.gz"
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}.sha512
 cd /tmp && sha512sum -c ${TOMCAT_PACKAGE}.sha512 && cd -

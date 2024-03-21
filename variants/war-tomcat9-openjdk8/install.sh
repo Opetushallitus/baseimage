@@ -19,8 +19,8 @@ apk --no-cache add \
   openssh \
   openssl \
   python3 \
-  py3-pip \
   py3-jinja2 \
+  py3-pip \
   ttf-dejavu \
   unzip \
   wget \
@@ -49,15 +49,16 @@ pip install \
   jinja2-cli \
   pyasn1 \
   six \
-  --no-cache-dir \
-  --break-system-packages
+  --break-system-packages \
+  --no-cache-dir
+
 
 echo "Creating cache directories for package managers"
 mkdir /home/oph/.m2/
 mkdir /home/oph/.ivy2/
 
 echo "Updating java.security"
-JAVA_SECURITY_FILE=$JAVA_HOME/conf/security/java.security
+JAVA_SECURITY_FILE=$JAVA_HOME/lib/security/java.security
 sed -i 's/#*networkaddress.cache.ttl=.*/networkaddress.cache.ttl=30/g' $JAVA_SECURITY_FILE
 
 echo "Installing Prometheus jmx_exporter"
@@ -93,7 +94,7 @@ TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.87/bin"
 TOMCAT_PACKAGE="apache-tomcat-9.0.87.tar.gz"
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}.sha512
-cd /tmp && sha512sum -c ${TOMCAT_PACKAGE}.sha512 && cd -
+cd /tmp && sha512sum -c ${TOMCAT_PACKAGE}.sha512
 mkdir -p /opt/tomcat
 tar xf /tmp/${TOMCAT_PACKAGE} -C /opt/tomcat --strip-components=1
 rm -rf /opt/tomcat/webapps/*

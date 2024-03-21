@@ -24,17 +24,15 @@ jobs:
       matrix:
         jdk: [8, 11, 17, 21]
         servicekind: [fatjar, war]
-        tomcat: [tomcat7, tomcat8, tomcat9]
+        tomcat: [tomcat9, tomcat10]
         exclude:
           - jdk: 17
             servicekind: war
-          - jdk: 21
-            tomcat: tomcat7, tomcat8
           - servicekind: fatjar
-            tomcat: tomcat8, tomcat9
-          - servicekind: war
-            tomcat: 8
-            jdk: 8
+            tomcat: tomcat10
+          - jdk: 8
+            tomcat: tomcat10
+
     env:
       PILVIKEHITYS_SLACK_TOKEN: ${{ secrets.PILVIKEHITYS_SLACK_TOKEN }}
       LOCAL_TAG: localhost:5001/actions/
@@ -49,7 +47,7 @@ jobs:
         run: |
           echo "IMAGE_LABEL=ga-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
           echo "BUILD_TIME=$(date --iso-8601=seconds)" >> $GITHUB_ENV
-          if [ "${{ matrix.tomcat }}" = "tomcat8" ] || [ "${{ matrix.tomcat }}" = "tomcat9" ]
+          if [ "${{ matrix.tomcat }}" = "tomcat9" ] || [ "${{ matrix.tomcat }}" = "tomcat10" ]
           then
             echo "FOLDER=${{ matrix.servicekind }}-${{ matrix.tomcat }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
           else
@@ -90,22 +88,14 @@ jobs:
       matrix:
         jdk: [8, 11, 17, 21]
         servicekind: [fatjar, war]
-        tomcat: [tomcat7, tomcat8, tomcat9]
+        tomcat: [tomcat9, tomcat10]
         exclude:
           - servicekind: fatjar
-            tomcat: tomcat8
-          - servicekind: fatjar
-            tomcat: tomcat9
-          - jdk: 8
-            tomcat: tomcat9
-          - jdk: 11
-            tomcat: tomcat9
+            tomcat: tomcat10
           - jdk: 17
             servicekind: war
           - jdk: 21
-            tomcat: tomcat7
-          - jdk: 21
-            tomcat: tomcat8
+            tomcat: tomcat10
 
     steps:
       - uses: actions/checkout@v3
@@ -115,7 +105,7 @@ jobs:
         run: |
           echo "IMAGE_LABEL=ga-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
           echo "BUILD_TIME=$(date --iso-8601=seconds)" >> $GITHUB_ENV
-          if [ "${{ matrix.tomcat }}" = "tomcat8" ] || [ "${{ matrix.tomcat }}" = "tomcat9" ]
+          if [ "${{ matrix.tomcat }}" = "tomcat9" ] || [ "${{ matrix.tomcat }}" = "tomcat10" ]
           then
             echo "FOLDER=${{ matrix.servicekind }}-${{ matrix.tomcat }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
           else

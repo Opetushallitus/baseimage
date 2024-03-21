@@ -85,8 +85,8 @@ echo "Init Prometheus config file"
 echo "{}" > /etc/prometheus.yaml
 
 echo "Installing Tomcat"
-TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.109/bin"
-TOMCAT_PACKAGE="apache-tomcat-7.0.109.tar.gz"
+TOMCAT_DL_PREFIX="https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.87/bin"
+TOMCAT_PACKAGE="apache-tomcat-9.0.87.tar.gz"
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}
 wget -c -q -P /tmp/ ${TOMCAT_DL_PREFIX}/${TOMCAT_PACKAGE}.sha512
 cd /tmp && sha512sum -c ${TOMCAT_PACKAGE}.sha512 && cd -

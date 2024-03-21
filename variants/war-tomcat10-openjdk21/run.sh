@@ -63,6 +63,7 @@ cp ${CONFIGPATH}/log/logback-access.xml ${CATALINA_BASE}/conf/
 echo "Copying war file to CATALINA_BASE/webapps"
 ln -s /opt/tomcat/webapps/* ${CATALINA_BASE}/webapps/
 cp -vr /opt/tomcat/conf/* ${CATALINA_BASE}/conf/
+cp -v ${CATALINA_HOME}/bin/tomcat-juli.jar ${CATALINA_BASE}/bin/
 
 
 echo "Starting Prometheus node_exporter..."
@@ -165,6 +166,7 @@ SETENV
 <?xml version='1.0' encoding='utf-8'?>
 <Server port="8005" shutdown="SHUTDOWN">
   <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+  <Listener className="org.apache.catalina.core.JasperListener" />
   <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
   <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
   <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
@@ -173,7 +175,6 @@ SETENV
 
     <Connector port="8080" protocol="org.apache.coyote.http11.Http11NioProtocol" connectionTimeout="20000" secure="true" scheme="https"
                SSLEnabled="false" proxyPort="443" maxThreads="50" asyncTimeout="150000" URIEncoding="UTF-8"/>
-
 
     <Engine name="Catalina" defaultHost="localhost">
 
@@ -190,7 +191,7 @@ SERVERXML
         ;;
     esac
 
-    CONTEXT="/etc/oph/tomcat/conf/context.xml"
+    CONTEXT="/etc/oph/tomcat/context.xml"
     if [ -f ${CONTEXT} ]; then
       echo "Create context.conf"
       j2 ${CONTEXT} ${VARS} > ${CATALINA_BASE}/conf/context.xml || true
