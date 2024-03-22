@@ -9,7 +9,7 @@
                SSLEnabled="false" proxyPort="443" maxThreads="50" asyncTimeout="150000" />
     <Engine name="Catalina" defaultHost="localhost">
       <Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true">
-        <Valve className="ch.qos.logback.access.tomcat.LogbackValve" filename="conf/logback-access.xml" asyncSupported="true"/>
+        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="/home/oph/logs" prefix="access" pattern="combined" />
       </Host>
     </Engine>
   </Service>
