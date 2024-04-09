@@ -144,8 +144,9 @@ if [ -f "${STANDALONE_JAR}" ]; then
     JAVA_OPTS="$JAVA_OPTS ${TRACE_PARAMS}"
     JAVA_OPTS="$JAVA_OPTS ${SECRET_JAVA_OPTS}"
     JAVA_OPTS="$JAVA_OPTS ${DEBUG_PARAMS}"
-    echo "java ${JAVA_OPTS} -jar ${STANDALONE_JAR}" > ${HOME}/java-cmd.txt
-    java ${JAVA_OPTS} -jar ${STANDALONE_JAR}
+    JAVA_CMD="java ${JAVA_OPTS} -jar ${STANDALONE_JAR}"
+    echo $JAVA_CMD | tee /home/oph/java-cmd.txt
+    eval $JAVA_CMD
 else
   echo "Fatal error: No fatjar found, exiting!"
   exit 1
