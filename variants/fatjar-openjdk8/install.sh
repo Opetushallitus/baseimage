@@ -56,10 +56,10 @@ mkdir -p /home/oph/.ivy2/
 mkdir -p /etc/oph
 
 echo "Installing Bouncy Castle bcprov security provider"
-BCPROV_DL_PREFIX="https://www.bouncycastle.org/download"
-BCPROV_PACKAGE="bcprov-jdk18on-171.jar"
+BCPROV_DL_PREFIX="https://downloads.bouncycastle.org/java"
+BCPROV_PACKAGE="bcprov-jdk15to18-1.78.1.jar"
 wget -c -q -P ${JAVA_HOME}/lib/ext/ ${BCPROV_DL_PREFIX}/${BCPROV_PACKAGE}
-echo "f3433a97d780fe9fa3dc3d562a41decd59b2e617ce884de9060349ac14750045  ${JAVA_HOME}/lib/ext/${BCPROV_PACKAGE}" |sha256sum -c
+echo "655f03362e09b7e7d8b4530d6fbc1ef0c75ab2fd28ccf71eb8515f4cc023cc8a  ${JAVA_HOME}/lib/ext/${BCPROV_PACKAGE}" |sha256sum -c
 
 echo "Updating java.security"
 JAVA_SECURITY_FILE=$JAVA_HOME/lib/security/java.security
@@ -77,11 +77,11 @@ echo "7b8a98e3482cee8889698ef391b85c47a3c4ce5b  jmx_prometheus_javaagent.jar" |s
 mv jmx_prometheus_javaagent.jar /usr/local/bin/
 
 echo "Installing Prometheus node_exporter"
-NODE_EXPORTER_VERSION="1.7.0"
+NODE_EXPORTER_VERSION="1.8.1"
 wget -q https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
 case "$ARCHITECTURE" in
-  arm64) echo "e386c7b53bc130eaf5e74da28efc6b444857b77df8070537be52678aefd34d96  node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz" |sha256sum -c ;;
-  amd64) echo "a550cd5c05f760b7934a2d0afad66d2e92e681482f5f57a917465b1fba3b02a6  node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz" |sha256sum -c ;;
+  arm64) echo "3b5c4765e429d73d0ec83fcd14af39087025e1f7073422fa24be8f4fa3d3bb96  node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz" |sha256sum -c ;;
+  amd64) echo "fbadb376afa7c883f87f70795700a8a200f7fd45412532cc1938a24d41078011  node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz" |sha256sum -c ;;
   *) echo "Unknown architecture" && exit 1
 esac
 tar -xvzf node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}.tar.gz
@@ -90,7 +90,7 @@ mv node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}/node_exporter /u
 rm -rf node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCHITECTURE}
 
 echo "Installing Otel agent"
-OTEL_VERSION="1.32.0"
+OTEL_VERSION="1.32.2"
 wget -q https://github.com/aws-observability/aws-otel-java-instrumentation/releases/download/v${OTEL_VERSION}/aws-opentelemetry-agent.jar
 mv aws-opentelemetry-agent.jar /usr/local/bin/
 
