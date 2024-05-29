@@ -118,7 +118,7 @@ export JAVA_OPTS="$JAVA_OPTS\
   -Xlog:gc*:file=${LOGS}/${NAME}_gc.log:uptime:filecount=10,filesize=10m\
   -XX:+HeapDumpOnOutOfMemoryError\
   -XX:HeapDumpPath=/tmp/heap_dump.hprof\
-  -XX:OnOutOfMemoryError='aws s3 mv /tmp/heap_dump.hprof s3://${ENV_NAME}-crash-dumps/${NAME}/`date +%F_%T`.hprof ; kill -9 %p'\
+  -XX:OnOutOfMemoryError='aws s3 mv /tmp/heap_dump.hprof s3://${ENV_NAME}-crash-dumps/${NAME}/`date +%F_%T`.hprof --no-progress ; kill -9 %p'\
   -XX:ErrorFile=/home/oph/logs/tomcat_hs_err.log\
   ${DEBUG_PARAMS}\
 "

@@ -132,7 +132,7 @@ if [ -f "${STANDALONE_JAR}" ]; then
     JAVA_OPTS="$JAVA_OPTS -Xlog:gc*:file=${LOGS}/${NAME}_gc.log:uptime:filecount=10,filesize=10m"
     JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
     JAVA_OPTS="$JAVA_OPTS -XX:HeapDumpPath=/tmp/heap_dump.hprof"
-    JAVA_OPTS="$JAVA_OPTS -XX:OnOutOfMemoryError='aws s3 mv /tmp/heap_dump.hprof s3://${ENV_NAME}-crash-dumps/${NAME}/`date +%F_%T`.hprof ; kill -9 %p'" 
+    JAVA_OPTS="$JAVA_OPTS -XX:OnOutOfMemoryError='aws s3 mv /tmp/heap_dump.hprof s3://${ENV_NAME}-crash-dumps/${NAME}/`date +%F_%T`.hprof --no-progress ; kill -9 %p'" 
     JAVA_OPTS="$JAVA_OPTS -XX:ErrorFile=${LOGS}/${NAME}_hs_err.log"
     JAVA_OPTS="$JAVA_OPTS -D${NAME}.properties=${HOME}/oph-configuration/${NAME}.properties"
     JAVA_OPTS="$JAVA_OPTS -javaagent:/usr/local/bin/jmx_prometheus_javaagent.jar=1134:/etc/prometheus.yaml"
