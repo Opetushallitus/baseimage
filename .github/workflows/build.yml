@@ -66,8 +66,8 @@ jobs:
         run: |
           docker build --build-arg SERVICE_KIND=${{ matrix.servicekind }} --build-arg OPENJDK_VERSION=${{ matrix.jdk }} --build-arg TOMCAT_VERSION=${{ matrix.tomcat }} --build-arg FOLDER=$FOLDER -f $DOCKERFILE -t test-alpine .
           docker run -u root -v $(pwd)/variants/$FOLDER:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
-          git --no-pager diff --shortstat --exit-code $(pwd)/variants/$FOLDER/package-versions
-          if [[ $? -ne 0 ]]; then
+          
+          if ! [[ -z $(git --no-pager diff --numstat $(pwd)/variants/$FOLDER/package-versions) ]]; then
             echo "Updating packages"
             git config --global user.name "Github Actions"
             git config --global user.email "github-actions@opintopolku.fi"
