@@ -96,9 +96,6 @@ if [ -f "${STANDALONE_JAR}" ]; then
       export CONFIG=/home/oph/oph-configuration/config.edn
       export CONFIGDEFAULTS=/home/oph/oph-configuration/config.edn
       export APP="ataru-editori"
-    elif [ ${NAME} == "osaan" ]; then
-        echo "Running osaan database migration"
-        java -jar /usr/local/bin/osaan-db.jar -u oph
     fi
 
     export HOME="/home/oph"
