@@ -21,6 +21,7 @@ jobs:
   update-packages:
     if: ${{ github.event_name == 'schedule' }}
     runs-on: ubuntu-latest
+    concurrency: 1
     strategy:
       matrix:
         jdk: [8, 11, 17, 21]
