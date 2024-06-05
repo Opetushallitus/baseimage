@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 13 * * 1'
+    - cron: '*/30 * * * *'
   push:
     paths-ignore:
       - '**.md'
@@ -63,10 +64,10 @@ jobs:
       - name: Build image and check packages
         shell: bash
         run: |
-          docker build --build-arg SERVICE_KIND=${{ matrix.servicekind }} --build-arg OPENJDK_VERSION=${{ matrix.jdk }} --build-arg TOMCAT_VERSION=${{ matrix.tomcat }} --build-arg FOLDER=${{ env.FOLDER }} -f ${{ env.DOCKERFILE }} -t test-alpine .
-          docker run -u root -v $(pwd)/variants/${{ env.FOLDER }}:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
+          docker build --build-arg SERVICE_KIND=${{ matrix.servicekind }} --build-arg OPENJDK_VERSION=${{ matrix.jdk }} --build-arg TOMCAT_VERSION=${{ matrix.tomcat }} --build-arg FOLDER=$FOLDER -f $DOCKERFILE -t test-alpine .
+          docker run -u root -v $(pwd)/variants/$FOLDER:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
 
-          if [ -n $(git diff --shortstat $(pwd)/variants/${{ env.FOLDER }}/package-versions) ]; then
+          if [[ $(git diff --shortstat $(pwd)/variants/$FOLDER/package-versions) -ne 0 ]]; then
             echo "Updating packages"
             git config --global user.name "Github Actions"
             git config --global user.email "github-actions@opintopolku.fi"
