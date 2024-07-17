@@ -2,8 +2,6 @@ name: Baseimage
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 13 * * 1'
   push:
     paths-ignore:
       - '**.md'
@@ -13,75 +11,10 @@ env:
 
 permissions:
   id-token: write   # This is required for requesting the JWT
-  contents: write    # This is required for actions/checkout read/write
+  contents: read    # This is required for actions/checkout read
 
 jobs:
-
-  update-packages:
-    if: ${{ github.event_name == 'schedule' }}
-    runs-on: ubuntu-latest
-    concurrency: 1
-    strategy:
-      matrix:
-        jdk: [8, 11, 17, 21]
-        servicekind: [fatjar, war]
-        tomcat: [tomcat9, tomcat10]
-        exclude:
-          - jdk: 17
-            servicekind: war
-          - servicekind: fatjar
-            tomcat: tomcat10
-          - jdk: 8
-            tomcat: tomcat10
-
-    env:
-      PILVIKEHITYS_SLACK_TOKEN: ${{ secrets.PILVIKEHITYS_SLACK_TOKEN }}
-      LOCAL_TAG: localhost:5001/actions/
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5001:5000
-    steps:
-      - name: Set up variables
-        shell: bash
-        run: |
-          echo "IMAGE_LABEL=ga-${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
-          echo "BUILD_TIME=$(date --iso-8601=seconds)" >> $GITHUB_ENV
-          if (${{ matrix.servicekind == 'war' }} && ${{ matrix.tomcat == 'tomcat9' || matrix.tomcat == 'tomcat10' }});
-          then
-            echo "FOLDER=${{ matrix.servicekind }}-${{ matrix.tomcat }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
-          else
-            echo "FOLDER=${{ matrix.servicekind }}-openjdk${{ matrix.jdk }}" >> $GITHUB_ENV
-          fi
-          if [ "${{ matrix.jdk }}" = "8" ]
-          then
-            echo "DOCKERFILE=Dockerfile-8" >> $GITHUB_ENV
-          else
-            echo "DOCKERFILE=Dockerfile" >> $GITHUB_ENV
-          fi
-      - uses: actions/checkout@v4
-      - name: Build image and check packages
-        shell: bash
-        run: |
-          docker build --build-arg SERVICE_KIND=${{ matrix.servicekind }} --build-arg OPENJDK_VERSION=${{ matrix.jdk }} --build-arg TOMCAT_VERSION=${{ matrix.tomcat }} --build-arg FOLDER=$FOLDER -f $DOCKERFILE -t test-alpine .
-          docker run -u root -v $(pwd)/variants/$FOLDER:/repository test-alpine /bin/sh -c "apk info -v | sort > /repository/package-versions && chmod 755 /repository/package-versions"
-          
-          if ! [[ -z $(git --no-pager diff --numstat $(pwd)/variants/$FOLDER/package-versions) ]]; then
-            echo "Updating packages"
-            git config --global user.name "Github Actions"
-            git config --global user.email "github-actions@opintopolku.fi"
-            git commit -a -m 'Update baseimage packages' || true
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-            curl -H "Content-Type: application/json" -X POST \
-              --data "{\"text\": \"Baseimage: packages updated by Github Actions\"}" \
-              ${PILVIKEHITYS_SLACK_TOKEN} 
-          else
-            echo "No update needed"
-          fi
-    
   build:
-    if: ${{ github.event_name != 'schedule' }}
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
