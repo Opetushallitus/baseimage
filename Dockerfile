@@ -1,5 +1,5 @@
 ARG OPENJDK_VERSION
-FROM amazoncorretto:${OPENJDK_VERSION}-alpine as corretto-jdk
+FROM amazoncorretto:${OPENJDK_VERSION}-alpine AS corretto-jdk
 
 RUN apk add --no-cache binutils
 
@@ -12,7 +12,8 @@ RUN $JAVA_HOME/bin/jlink \
          --compress=2 \
          --output /customjre
 
-FROM alpine:3.20
+# 3.20 breaks jinja2 due to removal of imp - watch if jinja2 gets updated to importlib
+FROM alpine:3.19
 RUN apk upgrade --no-cache
 
 # need to repeat the argument declaration after FROM for it to be back in scope
