@@ -97,8 +97,8 @@ if [ -f "${STANDALONE_JAR}" ]; then
       export CONFIGDEFAULTS=/home/oph/oph-configuration/config.edn
       export APP="ataru-editori"
     elif [ ${NAME} == "ovara-ataru" ]; then
-      export CONFIG=/home/oph/oph-configuration/config.edn
-      export CONFIGDEFAULTS=/home/oph/oph-configuration/config.edn
+      export CONFIG=/home/oph/oph-configuration/ovara-config.edn
+      export CONFIGDEFAULTS=/home/oph/oph-configuration/ovara-config.edn
     fi
 
     export HOME="/home/oph"
