@@ -73,7 +73,7 @@ echo "Using secret java options: ${SECRET_JAVA_OPTS}"
 
 STANDALONE_JAR=/usr/local/bin/${NAME}.jar
 if [ -f "${STANDALONE_JAR}" ]; then
-    echo "Starting standalone application..."
+    echo "Starting standalone application... ${NAME}"
 
     # Service-specific boot-time exceptions
     if [ ${NAME} == "suoritusrekisteri" ]; then
@@ -97,14 +97,15 @@ if [ -f "${STANDALONE_JAR}" ]; then
       export CONFIGDEFAULTS=/home/oph/oph-configuration/config.edn
       export APP="ataru-editori"
     elif [ ${NAME} == "ovara-ataru" ]; then
-      export CONFIG=/home/oph/oph-configuration/ovara-config.edn
-      export CONFIGDEFAULTS=/home/oph/oph-configuration/ovara-config.edn
+      echo "Using ovara-ataru configuration"
+      export CONFIG=/home/oph/ovara-configuration/ovara-config.edn
+      export CONFIGDEFAULTS=/home/oph/ovara-configuration/ovara-config.edn
     fi
 
     export HOME="/home/oph"
     export LOGS="${HOME}/logs"
 
-    if [[ ${NAME} == "ovara"* ]]; then
+    if [[ "${NAME}" =~ ^ovara ]]; then
       echo "ovara java_opts: ${JAVA_OPTS}"
     else
       JAVA_OPTS="$JAVA_OPTS -Duser.home=${HOME}"
