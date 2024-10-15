@@ -73,7 +73,7 @@ echo "Using secret java options: ${SECRET_JAVA_OPTS}"
 
 STANDALONE_JAR=/usr/local/bin/${NAME}.jar
 if [ -f "${STANDALONE_JAR}" ]; then
-    echo "Starting standalone application..."
+    echo "Starting standalone application... ${NAME}"
 
     # Service-specific boot-time exceptions
     if [ ${NAME} == "suoritusrekisteri" ]; then
@@ -101,8 +101,8 @@ if [ -f "${STANDALONE_JAR}" ]; then
     export HOME="/home/oph"
     export LOGS="${HOME}/logs"
 
-    if [[ ${NAME} == "ovara"* ]]; then
-        echo "ovara java_opts: ${JAVA_OPTS}"
+    if [[ "${NAME}" =~ ^ovara ]]; then
+      echo "ovara java_opts: ${JAVA_OPTS}"
     else
       JAVA_OPTS="$JAVA_OPTS -Duser.home=${HOME}"
       JAVA_OPTS="$JAVA_OPTS -Djavax.net.ssl.trustStore=${HOME}/cacerts"

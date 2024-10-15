@@ -1,5 +1,5 @@
 ARG OPENJDK_VERSION
-FROM amazoncorretto:${OPENJDK_VERSION}-alpine-jre
+FROM amazoncorretto:${OPENJDK_VERSION}-alpine3.19-jre
 RUN apk upgrade --no-cache
 
 # need to repeat the argument declaration after FROM for it to be back in scope
