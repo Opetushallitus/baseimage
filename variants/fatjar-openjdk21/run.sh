@@ -111,10 +111,10 @@ if [ -f "${STANDALONE_JAR}" ]; then
     JAVA_OPTS="$JAVA_OPTS -Dlogbackaccess.configurationFile=${LOGPATH}/logback-access.xml"
     if [ ${NAME} == "liiteri" ]; then
         JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${LOGPATH}/logback-liiteri.xml"
-    elif [ ${NAME} == "virkailijan-tyopoyta" ]; then
+    elif [ ${NAME} == "virkailijan-tyopoyta" ] || [ ${NAME} == "oti" ]; then
         JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${HOME}/oph-configuration/logback.xml"
-    elif [ ${NAME} == "oti" ]; then
-        JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${HOME}/oph-configuration/logback.xml"
+    elif [ ${NAME} == "oma-opintopolku" ]; then
+        echo "oma-opintopolku"
     else
         # at least hakuperusteet seems to need this
         JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${LOGPATH}/logback-standalone.xml"
