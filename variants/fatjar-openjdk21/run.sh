@@ -113,7 +113,7 @@ if [ -f "${STANDALONE_JAR}" ]; then
         JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${LOGPATH}/logback-liiteri.xml"
     elif [ ${NAME} == "virkailijan-tyopoyta" ] || [ ${NAME} == "oti" ]; then
         JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${HOME}/oph-configuration/logback.xml"
-    elif [ ${NAME} == "oma-opintopolku" ] || [ ${NAME} == "ohjausparametrit" ] || [ ${NAME} == "valintalaskenta-ui" || [ ${NAME} == "valintaperusteet-ui" ]; then
+    elif [ ${NAME} == "oma-opintopolku" ] || [ ${NAME} == "ohjausparametrit" ] || [ ${NAME} == "valintalaskenta-ui" ] || [ ${NAME} == "valintaperusteet-ui" ]; then
         echo "${NAME}"
     else
         # at least hakuperusteet seems to need this
