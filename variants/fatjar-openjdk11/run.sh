@@ -105,15 +105,18 @@ fi
 export HOME="/home/oph"
 export LOGS="${HOME}/logs"
 
-if [[ "${NAME}" =~ ^ovara ]]; then
-    echo "ovara java_opts: ${JAVA_OPTS}"
-else
+if [[ "X${DONT_INCLUDE_DEFAULT_CONFIG}" == X && ! "${NAME}" =~ ^ovara ]]; then
     JAVA_OPTS="$JAVA_OPTS -Duser.home=${HOME}"
     JAVA_OPTS="$JAVA_OPTS -Djavax.net.ssl.trustStore=${HOME}/cacerts"
     JAVA_OPTS="$JAVA_OPTS -DHOSTNAME=`hostname`"
     JAVA_OPTS="$JAVA_OPTS -Djava.security.egd=file:/dev/urandom"
     JAVA_OPTS="$JAVA_OPTS -Djava.net.preferIPv4Stack=true"
     JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8"
+    JAVA_OPTS="$JAVA_OPTS -Djava.rmi.server.hostname=localhost"
+    JAVA_OPTS="$JAVA_OPTS -D${NAME}.properties=${HOME}/oph-configuration/${NAME}.properties"
+fi
+
+if [[ "X${DONT_INCLUDE_LOGBACK_CONFIG}" == X && ! "${NAME}" =~ ^ovara ]]; then
     JAVA_OPTS="$JAVA_OPTS -Dlogback.access=${LOGPATH}/logback-access.xml"
     JAVA_OPTS="$JAVA_OPTS -Dlogbackaccess.configurationFile=${LOGPATH}/logback-access.xml"
     if [ ${NAME} == "liiteri" ]; then
@@ -126,24 +129,33 @@ else
 	# at least hakuperusteet seems to need this
 	JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${LOGPATH}/logback-standalone.xml"
     fi
+fi
+
+if [[ "X${DONT_INCLUDE_DEBUGGER_CONFIG}" == X && ! "${NAME}" =~ ^ovara ]]; then
     JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote"
     JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
     JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
     JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.port=${JMX_PORT}"
     JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT}"
     JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.local.only=false"
-    JAVA_OPTS="$JAVA_OPTS -Djava.rmi.server.hostname=localhost"
+    JAVA_OPTS="$JAVA_OPTS -javaagent:/usr/local/bin/jmx_prometheus_javaagent.jar=1134:/etc/prometheus.yaml"
+fi
+
+if [[ "X${DONT_INCLUDE_MEMORY_LOGS_CONFIG}" == X && ! "${NAME}" =~ ^ovara ]]; then
     JAVA_OPTS="$JAVA_OPTS -Xlog:gc*:file=${LOGS}/${NAME}_gc.log:uptime:filecount=10,filesize=10m"
+    JAVA_OPTS="$JAVA_OPTS -XX:ErrorFile=${LOGS}/${NAME}_hs_err.log"
+fi
+
+if [[ "X${DONT_INCLUDE_MEMORY_MANAGEMENT_CONFIG}" == X && ! "${NAME}" =~ ^ovara ]]; then
     JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
     JAVA_OPTS="$JAVA_OPTS -XX:HeapDumpPath=/tmp/heap_dump.hprof"
-    JAVA_OPTS="$JAVA_OPTS -XX:OnOutOfMemoryError='aws s3 mv /tmp/heap_dump.hprof s3://${ENV_NAME}-crash-dumps/${NAME}/`date +%F_%T`.hprof --no-progress ; kill -9 %p'" 
-    JAVA_OPTS="$JAVA_OPTS -XX:ErrorFile=${LOGS}/${NAME}_hs_err.log"
-    JAVA_OPTS="$JAVA_OPTS -D${NAME}.properties=${HOME}/oph-configuration/${NAME}.properties"
-    JAVA_OPTS="$JAVA_OPTS -javaagent:/usr/local/bin/jmx_prometheus_javaagent.jar=1134:/etc/prometheus.yaml"
-    JAVA_OPTS="$JAVA_OPTS ${TRACE_PARAMS}"
-    JAVA_OPTS="$JAVA_OPTS ${SECRET_JAVA_OPTS}"
-    JAVA_OPTS="$JAVA_OPTS ${DEBUG_PARAMS}"
+    JAVA_OPTS="$JAVA_OPTS -XX:OnOutOfMemoryError='aws s3 mv /tmp/heap_dump.hprof s3://${ENV_NAME}-crash-dumps/${NAME}/`date +%F_%T`.hprof --no-progress ; kill -9 %p'"
 fi
+
+JAVA_OPTS="$JAVA_OPTS ${TRACE_PARAMS}"
+JAVA_OPTS="$JAVA_OPTS ${SECRET_JAVA_OPTS}"
+JAVA_OPTS="$JAVA_OPTS ${DEBUG_PARAMS}"
+
 JAVA_CMD="java ${JAVA_OPTS} -jar ${STANDALONE_JAR}"
 echo $JAVA_CMD | tee /home/oph/java-cmd.txt
 eval $JAVA_CMD
