@@ -100,6 +100,8 @@ elif [ ${NAME} == "ataru-editori" ]; then
     export CONFIG=/home/oph/oph-configuration/config.edn
     export CONFIGDEFAULTS=/home/oph/oph-configuration/config.edn
     export APP="ataru-editori"
+elif [ ${NAME} == "liiteri-background" ]; then
+    export APP="liiteri-background"
 fi
 
 export HOME="/home/oph"
