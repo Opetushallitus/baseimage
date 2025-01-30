@@ -123,7 +123,7 @@ if [[ "X${DONT_INCLUDE_LOGBACK_CONFIG}" == X && ! "${NAME}" =~ ^ovara ]]; then
 	JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${LOGPATH}/logback-liiteri.xml"
     elif [ ${NAME} == "virkailijan-tyopoyta" ] || [ ${NAME} == "oti" ]; then
 	JAVA_OPTS="$JAVA_OPTS -Dlogback.configurationFile=${HOME}/oph-configuration/logback.xml"
-    elif [ ${NAME} == "oma-opintopolku" ] || [ ${NAME} == "ohjausparametrit" ] || [ ${NAME} == "sijoittelu-service" ] || [ ${NAME} == "valintalaskenta-ui" ] || [ ${NAME} == "valintaperusteet-ui" ] || [ ${NAME} == "valintaperusteet-service" ] || [ ${NAME} == "valintalaskentakoostepalvelu" ] || [ ${NAME} == "lokalisointi" ]; then
+    elif [ ${NAME} == "oma-opintopolku" ] || [ ${NAME} == "ohjausparametrit" ] || [ ${NAME} == "sijoittelu-service" ] || [ ${NAME} == "valintalaskenta-ui" ] || [ ${NAME} == "valintalaskenta" ] || [ ${NAME} == "valintaperusteet-ui" ] || [ ${NAME} == "valintaperusteet-service" ] || [ ${NAME} == "valintalaskentakoostepalvelu" ] || [ ${NAME} == "lokalisointi" ]; then
 	echo "${NAME}"
     else
 	# at least hakuperusteet seems to need this
