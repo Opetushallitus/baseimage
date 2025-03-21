@@ -57,9 +57,9 @@ mkdir -p /etc/oph
 
 echo "Installing Bouncy Castle bcprov security provider"
 BCPROV_DL_PREFIX="https://downloads.bouncycastle.org/java"
-BCPROV_PACKAGE="bcprov-jdk15to18-1.78.1.jar"
+BCPROV_PACKAGE="bcprov-jdk15to18-176.jar"
 wget -c -q -P ${JAVA_HOME}/lib/ext/ ${BCPROV_DL_PREFIX}/${BCPROV_PACKAGE}
-echo "b6758a0a72ed44dfdb316e50a67919cc4640e160a26b8a7e9d989cdcb3fc8a7f  ${JAVA_HOME}/lib/ext/${BCPROV_PACKAGE}" |sha256sum -c
+echo "1c43883ac1c69ed43a13d48d130420ff3562422d0a7d2910cfa77a3e3ee6400a  ${JAVA_HOME}/lib/ext/${BCPROV_PACKAGE}" |sha256sum -c
 
 echo "Updating java.security"
 JAVA_SECURITY_FILE=$JAVA_HOME/lib/security/java.security
