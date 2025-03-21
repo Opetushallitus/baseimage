@@ -41,10 +41,9 @@ COPY tomcat-files/${TOMCAT_VERSION}/jars/*.jar /tmp/tomcat/lib/
 WORKDIR /root/
 COPY variants/${FOLDER}/install.sh ./
 COPY variants/${FOLDER}/test.sh ./
-RUN \
-  sh install.sh && \
-  sh test.sh && \
-  rm *.sh
+RUN sh install.sh
+RUN sh test.sh
+RUN rm *.sh
 
 RUN echo "Remove /root and symlink /root to /home/oph for backwards compatibility"
 RUN rm -rf /root && \
