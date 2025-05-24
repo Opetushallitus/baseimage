@@ -100,6 +100,19 @@ elif [ ${NAME} == "ataru-editori" ]; then
     export CONFIG=/home/oph/oph-configuration/config.edn
     export CONFIGDEFAULTS=/home/oph/oph-configuration/config.edn
     export APP="ataru-editori"
+elif [ ${NAME} == "yki" ]; then
+  echo "Installing custom certificates for YKI"
+  SOLKICA="${CONFIGPATH}/yki/yki.jyu.fi.ca"
+  SOLKICRT="${CONFIGPATH}/yki/yki.jyu.fi.crt"
+  TRUSTSTORE_PWD=$(grep "java_cacerts_pwd" /home/oph/oph-environment/opintopolku.yml | cut -d ":" -f 2 | sed "s/^ *//g")
+	if [ -f "${SOLKICA}" ]; then
+echo "Installing SOLKI intermediate certificate for YKI"
+keytool -import -noprompt -trustcacerts -alias yki_solki_ca -storepass ${TRUSTSTORE_PWD} -keystore /home/oph/cacerts -file ${SOLKICA}
+  fi
+	if [ -f "${SOLKICRT}" ]; then
+echo "Installing SOLKI certificate for YKI"
+keytool -import -noprompt -trustcacerts -alias yki_solki_crt -storepass ${TRUSTSTORE_PWD} -keystore /home/oph/cacerts -file ${SOLKICRT}
+  fi
 fi
 
 export HOME="/home/oph"
