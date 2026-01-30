@@ -13,7 +13,7 @@ RUN $JAVA_HOME/bin/jlink \
          --output /customjre
 
 # 3.20 breaks jinja2 due to removal of imp - watch if jinja2 gets updated to importlib
-FROM alpine:3.19
+FROM alpine:3.23.3
 RUN apk upgrade --no-cache
 
 # need to repeat the argument declaration after FROM for it to be back in scope
