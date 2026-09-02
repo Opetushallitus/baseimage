@@ -144,7 +144,19 @@ if [[ "X${DONT_INCLUDE_LOGBACK_CONFIG}" == X && ! "${NAME}" =~ ^ovara ]]; then
     fi
 fi
 
-if [[ "X${DONT_INCLUDE_DEBUGGER_CONFIG}" == X && ! "${NAME}" =~ ^ovara ]]; then
+INCLUDE_DEBUGGER_CONFIG=false
+if [ "X${DONT_INCLUDE_DEBUGGER_CONFIG}" == X ]; then
+    INCLUDE_DEBUGGER_CONFIG=true
+    if [[ "${NAME}" =~ ^ovara ]]; then
+	INCLUDE_DEBUGGER_CONFIG=false
+	# ovara-backend on poikkeus: sille jmx halutaan päälle
+	if [ "${NAME}" == "ovara-backend" ]; then
+	    INCLUDE_DEBUGGER_CONFIG=true
+	fi
+    fi
+fi
+
+if [ "${INCLUDE_DEBUGGER_CONFIG}" == true ]; then
     JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote"
     JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
     JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
